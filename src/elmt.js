@@ -6,7 +6,7 @@ const NON_PROSE_ELMT = new Set([
   // Media and Source elmtents
   'script', 'style', 'img', 'video', 'audio', 'canvas', 'svg', 'map', 'object',
   // Input elmtents
-  'input', 'textarea', 'select', 'option', 'optgroup', 'button'
+  'input', 'textarea', 'select', 'option', 'optgroup', 'button',
 ])
 
 const NON_CONTIGUOUS_PROSE_ELMT = new Set([
@@ -22,7 +22,7 @@ const NON_CONTIGUOUS_PROSE_ELMT = new Set([
   // Input elmtents
   'input', 'textarea', 'select', 'option', 'optgroup', 'button',
   // Table related elmtents
-  'table', 'tbody', 'thead', 'th', 'tr', 'td', 'caption', 'col', 'tfoot', 'colgroup'
+  'table', 'tbody', 'thead', 'th', 'tr', 'td', 'caption', 'col', 'tfoot', 'colgroup',
 ])
 
 const NON_INLINE_PROSE = ( elmt ) => {

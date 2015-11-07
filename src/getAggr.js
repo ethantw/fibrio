@@ -23,14 +23,13 @@ Object.assign( Finder.prototype, {
       let innerText = this.getAggr( node )
 
       if (
-        this.boundaryFn &&
         node.type === 'tag' &&
-        ( this.boundaryFn === true || this.boundaryFn( node ))
+        this.boundaryFn && this.boundaryFn( node )
       ) {
         ret[ ++i ] = innerText
         ret[ ++i ] = ''
       } else {
-        if (typeof innerText[0] === 'string' ) {
+        if ( typeof innerText[0] === 'string' ) {
           ret[ i ] += innerText.shift()
         }
         if ( innerText.length > 0 ) {
