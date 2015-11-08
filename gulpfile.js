@@ -5,6 +5,8 @@ const concat  = require( 'gulp-concat-util' )
 const server  = require( 'gulp-connect' ).server
 const webpack = require( 'webpack' )
 
+const pkg     = require( './package.json' )
+
 // Unified tasks
 gulp.task( 'default', [ 'index.js' ])
 gulp.task( 'dev',     [ 'default', 'server', 'watch' ])
@@ -19,12 +21,16 @@ gulp.task( 'watch', function() {
 
 gulp.task( 'index.js', [ 'pack' ], function() {
   gulp.src( './index.js' )
-    .pipe(concat( 'index.js', {
-      process: function( src ) {
-        return src.replace( /IMPORT/g, 'require' )
-      }
-    }))
-    .pipe(gulp.dest( './' ))
+  .pipe(concat( 'index.js', {
+    process: function( src ) {
+      return (
+        src
+        .replace( /IMPORT/g, 'require' )
+        .replace( /@VERSION/g, pkg.version )
+      )
+    }
+  }))
+  .pipe(gulp.dest( './' ))
 })
 
 gulp.task( 'pack', function( callback ) {
