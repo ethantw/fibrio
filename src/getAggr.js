@@ -1,7 +1,7 @@
 
 import Finder from './core'
 
-Object.assign( Finder.prototype, {
+Object.assign( Finder.fn, {
   /**
    * Get the text aggregate of a node w/o resorting to
    * `$node.text()`
