@@ -109,7 +109,7 @@ Object.assign( Finder.fn, {
         if ( current.rerendered && !current::next()) {
           nodeStack.pop()
           nodeStack.push(
-            this.context.find( current::parent())
+            context.find( current::parent())
           )
         }
 
@@ -140,6 +140,7 @@ Object.assign( Finder.fn, {
   },
 
   replaceMat( mat, startPortion, innerPortion, endPortion ) {
+    let context      = this.context
     let matStartNode = startPortion.node
     let matEndNode   = endPortion.node
 
@@ -153,9 +154,9 @@ Object.assign( Finder.fn, {
     if ( matStartNode === matEndNode ) {
       let matNode = matStartNode
       let data    = matNode.data
-      let matElmt = this.context.find( matNode::parent() )
+      let matElmt = context.find( matNode::parent() )
 
-      if ( !matElmt[0] )  matElmt = this.context
+      if ( !matElmt[0] )  matElmt = context
 
       let idx = matElmt[0].children.indexOf( matNode )
       let replacement
@@ -189,12 +190,12 @@ Object.assign( Finder.fn, {
     } else {
       // matStartNode -> matInnerNode -> matEndNode
 
-      let matStartElmt = this.context.find( matStartNode::parent() )
-      let matEndElmt   = this.context.find( matEndNode::parent() )
+      let matStartElmt = context.find( matStartNode::parent() )
+      let matEndElmt   = context.find( matEndNode::parent() )
       let areNotEqual  = true
 
-      if ( !matStartElmt[0] )  matStartElmt = this.context
-      if ( !matEndElmt[0] )    matEndElmt   = this.context
+      if ( !matStartElmt[0] )  matStartElmt = context
+      if ( !matEndElmt[0] )    matEndElmt   = context
 
       preceeding = matStartNode.data.substring( 0, startPortion.idxInNode )
       following  = matEndNode.data.substring( endPortion.endIdxInNode )
