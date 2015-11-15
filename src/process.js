@@ -11,21 +11,21 @@ const $ = IMPORT( 'cheerio' )
 
 Object.assign( Finder.fn, {
   processMatch() {
-    let match = this.match
-    let node  = this.context
+    let match   = this.match
+    let context = this.context
 
     let startPortion
     let endPortion
     let innerPortion = []
-    let current      = node
+    let current      = context
     let mat          = match.shift()
     let atIdx        = 0
     let matIdx       = 0
     let portionIdx   = 0
-    let nodeStack    = [ node ]
+    let nodeStack    = [ context ]
     let doAvoidNode
 
-    let changed
+    this.phase.push( context.html())
 
     out: while ( true ) {
       if ( current::type() === 'text' ) {
@@ -134,7 +134,7 @@ Object.assign( Finder.fn, {
         current = nodeStack.pop()
 
         // Done with the Finder context
-        if ( current === node )  break out
+        if ( current === context )  break out
       }
     }
   },

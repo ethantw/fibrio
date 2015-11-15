@@ -6,7 +6,7 @@ Object.assign( Finder.fn, {
   preset:   'prose',
   mode:     'retain',
   context:  undefined,
-  revert:   [],
+  phase:    [],
   selector: {
     filter:   [],
     avoid:    [],
