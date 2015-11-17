@@ -15,6 +15,7 @@ Fibre.Fibre = Fibre.version = '@VERSION'
 
 // ES6 module
 export default Fibre
+
 // NPM (CommonJS) module
-EXPORT = Fibre
+EXPORT_ONCE( Fibre )
 
