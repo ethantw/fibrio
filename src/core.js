@@ -57,9 +57,10 @@ class Finder {
   }
 
   setMode( mode ) {
-    this.mode = /first/i.test( mode )
+    this.mode = /^first$/i.test( mode )
     ? 'first'
     : 'retain'
+    return this
   }
 
   filterFn( node ) {
@@ -112,6 +113,87 @@ class Finder {
       this.selector.bdry.clear()
     }
     return this
+  }
+
+  /**
+   * Set actions to the instance without the actual
+   * procedure for future processing.
+   *
+   * @param {Object} Actions
+   * @return {Fibre} The instance
+   */
+  action( action ) {
+    if ( typeof action !== 'object' )  return this
+    if ( action.mode )    this.setMode( action.mode )
+    if ( action.find )    this.find( action.find )
+
+    this.wrapper     = action.wrap    || null
+    this.replacement = action.replace || null
+    this.newActionProcessed = false
+    return this
+  }
+
+  /**
+   * Replace the matched text with configured
+   * replacements.
+   *
+   * @arg {RegExp|String} [find=this.find]
+   *   A pattern for the Finder to grep
+   * @arg {String|Function}
+   *   What to replace each match with
+   * @return {Fibre}
+   *   The instance
+   */
+  replace( ...arg ) {
+    this.replacement = arg.pop()
+    this.newActionProcessed = false
+
+    if ( arg[0] )  this.find( arg[0] )
+    return this.process()
+  }
+
+  /**
+   * Wrap the matched text with configured
+   * element/node.
+   *
+   * @arg {RegExp|String} [find=this.find]
+   *   A pattern for the Finder to grep
+   * @arg {String|Function}
+   *   What to wrap each match with
+   * @return {Fibre}
+   *   The instance
+   */
+  wrap( ...arg ) {
+    this.wrapper = arg.pop()
+    this.newActionProcessed = false
+
+    if ( arg[0] )  this.find( arg[0] )
+    return this.process()
+  }
+
+  /**
+   * Process (replace/wrap) the matched text.
+   *
+   * @return {Fibre} The instance
+   */
+  process() {
+    if ( this.newActionProcessed === false ) {
+      this.newActionProcessed = true
+      this.processMatch()
+    }
+    return this
+  }
+
+  /**
+   * Process (replace/wrap) the matched text and
+   * return the processed HTML.
+   *
+   * @return {string}
+   *   The processed HTML of the context
+   */
+  render() {
+    this.process()
+    return this.html
   }
 }
 
