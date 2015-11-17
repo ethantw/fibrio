@@ -1,38 +1,40 @@
 
 import escapeReg from './fn/escapeReg'
 import { prop }  from './fn/manipulate'
+import setAct    from './fn/setAct'
 
 // NPM modules:
 const $   = IMPORT( 'cheerio' )
 const $fn = $.prototype
 
-function selectorAction( action, selector ) {
-  if ( /^(add|delete)$/i.test( action )) {
-    return this
-  }
-
-  if ( typeof selector === 'string' ) {
-    selector = selector
-      .replace( /\,\s*/, ',' )
-      .split( ',' )
-  }
-  if ( Array.isArray( selector )) {
-    selector.map( s => this[ action ]( s ))
-  }
-  return this
-}
-
 class Finder {
-  constructor( html, noPreset ) {
+  /**
+   * Create a new finder with an HTML context.
+   * @constructor
+   *
+   * @param {String} HTML string
+   * @param {Boolean} [noPreset=false]
+   * @return {Fibre} The instance itself
+   */
+  constructor( html, noPreset=false ) {
+    this.ohtml   = html
+    this.context = $( `<fibre-root>${html}</fibre-root>` )
+
     if ( noPreset === true ) {
       this.selector.avoid.clear()
       this.selector.bdry.clear()
     }
-
-    this.ohtml   = html
-    this.context = $( `<fibre-root>${html}</fibre-root>` )
   }
 
+  /**
+   * Check if a node matches with the configured
+   * selectors.
+   *
+   * @param {Cheerio|CheerioDOMObject|HTMLString}
+   *   The node to be checked with.
+   * @param {String}
+   *   The Selectors to be matched.
+   */
   static matches( node, selector ) {
     if ( typeof node === 'string' ) {
       node = $( node )
@@ -56,13 +58,29 @@ class Finder {
       .replace( /<\/?fibre\-text>/gi, '' )
   }
 
-  setMode( mode ) {
-    this.mode = /^first$/i.test( mode )
+  /**
+   * Indicates whether to re-use the existing portions
+   * while replacing a match with text or to place the
+   * the entire replacement in the first found match
+   * portion’s node.
+   *
+   * @param {String} [mode='retain']
+   *   Either 'retain' or 'first'
+   */
+  mode( mode ) {
+    this.portionMode = /^first$/i.test( mode )
     ? 'first'
     : 'retain'
     return this
   }
 
+  /**
+   * The default function to be called on every element
+   * encountered by the finder. Once the function returns
+   * false, the element will be avoided.
+   *
+   * @param {Cheerio|CheerioDOMObject}
+   */
   filterFn( node ) {
     const avoid = this.selector.avoid || new Set()
     if ( avoid.has( node::prop( 'name' )))  return false
@@ -73,6 +91,14 @@ class Finder {
     return !Finder.matches( node, selector )
   }
 
+  /**
+   * The default function to be called on every element
+   * encountered by the finder. Once the function returns
+   * true, the finder will start a new text aggregation
+   * context; otherwise the previous text continues.
+   *
+   * @param {Cheerio|CheerioDOMObject}
+   */
   bdryFn( node ) {
     const bdry = this.selector.bdry || new Set()
     if ( bdry.has( node::prop( 'name' )))  return true
@@ -83,15 +109,30 @@ class Finder {
     return Finder.matches( node, selector )
   }
 
+  /**
+   * Add new CSS selectors that, when matched with an
+   * element in text processing, the element will be
+   * avoided by the finder.
+   *
+   * @param {String|Array} CSS selectors
+   */
   addAvoid( selector ) {
     this.selector.avoid
-      ::selectorAction( 'add', selector )
+      ::setAct( 'add', selector )
     return this
   }
 
+  /**
+   * Remove the configured CSS selectors in the instance
+   * avoid.
+   *
+   * @param {String|Array|null}
+   *   CSS selectors
+   *   Or, if not set, clear the entire avoid set.
+   */
   removeAvoid( selector ) {
     this.selector.avoid
-      ::selectorAction( 'delete', selector )
+      ::setAct( 'delete', selector )
 
     if ( typeof selector === 'undefined' ) {
       this.selector.bdry.clear()
@@ -99,15 +140,30 @@ class Finder {
     return this
   }
 
+  /**
+   * Add new CSS selectors that, when matched with an
+   * element in text aggregating, the element will
+   * start a new text aggregation context.
+   *
+   * @param {String|Array|null} CSS selectors
+   */
   addBdry( selector ) {
     this.selector.bdry
-      ::selectorAction( 'add', selector )
+      ::setAct( 'add', selector )
     return this
   }
 
+  /**
+   * Remove the assigned boundary CSS selectors
+   * from the instance.
+   *
+   * @param {String|Array|null}
+   *   CSS selectors
+   *   Or, if not set, clear the entire boundary set.
+   */
   removeBdry( selector ) {
     this.selector.bdry
-      ::selectorAction( 'delete', selector )
+      ::setAct( 'delete', selector )
 
     if ( typeof selector === 'undefined' ) {
       this.selector.bdry.clear()
@@ -124,7 +180,7 @@ class Finder {
    */
   action( action ) {
     if ( typeof action !== 'object' )  return this
-    if ( action.mode )    this.setMode( action.mode )
+    if ( action.mode )    this.mode( action.mode )
     if ( action.find )    this.find( action.find )
 
     this.wrapper     = action.wrap    || null
