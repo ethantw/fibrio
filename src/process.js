@@ -10,6 +10,12 @@ import {
 const $ = IMPORT( 'cheerio' )
 
 Object.assign( Finder.fn, {
+  /**
+   * Process (wrap/replace) the matched text with the
+   * instance’s previous set wrapper/replacement.
+   *
+   * @return {Fibre} The instance
+   */
   processMatch() {
     let match   = this.match
     let context = this.context
@@ -74,7 +80,6 @@ Object.assign( Finder.fn, {
             text:         current.data.substring( mat.startIdx - atIdx, mat.endIdx - atIdx ),
           }
         }
-
         atIdx += current.data.length
       }
 
@@ -124,21 +129,29 @@ Object.assign( Finder.fn, {
         continue
       }
 
-      // Move forward or move up
       while ( true ) {
+        // Move forward
         if ( current::next()) {
           current = current::next()
           break
         }
-
+        // Move up (and move forward again)
         current = nodeStack.pop()
 
-        // Done with the Finder context
+        // Done with the assigned context from the Finder
         if ( current === context )  break out
       }
     }
+    return this
   },
 
+  /**
+   * Replace the matched text portion(s) with the configured
+   * replacement (node/element) and return the endPortion
+   * node for `processMatch` to iterate.
+   *
+   * @return {CheerioDOMObject}
+   */
   replaceMat( mat, startPortion, innerPortion, endPortion ) {
     let context      = this.context
     let matStartNode = startPortion.node
@@ -241,6 +254,12 @@ Object.assign( Finder.fn, {
     }
   },
 
+  /**
+   * Get the replacement node/element according to the
+   * given portion.
+   *
+   * @return {CheerioDOMNode}
+   */
   getPortionReplacementElmt( portion, mat, matIdx ) {
     let replacement = this.replacement || '$&'
     let wrapper     = this.wrapper
@@ -264,8 +283,11 @@ Object.assign( Finder.fn, {
       return createText( replacement )
     }
 
-    let elmt = typeof wrapper === 'string' ?
-      $( `<${wrapper}></${wrapper}>` ) : wrapper
+    let elmt = typeof wrapper === 'string'
+    ? /^<([\w\-]+)\s?.*>.*<\/\1>$/gi.test( wrapper )
+      ? $( wrapper )
+      : $( `<${wrapper}></${wrapper}>` )
+    : wrapper
 
     replacement = createText(
       this.prepReplacementString(
@@ -284,8 +306,14 @@ Object.assign( Finder.fn, {
     return elmt
   },
 
+  /**
+   * Prepare the replacement text according to the given
+   * portion.
+   *
+   * @return {String}
+   */
   prepReplacementString( string, portion, mat, matIdx ) {
-    let mode = this.mode
+    let mode = this.portionMode
 
     if (
       mode === 'first' &&

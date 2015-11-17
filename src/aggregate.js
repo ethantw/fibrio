@@ -6,6 +6,11 @@ Object.assign( Finder.fn, {
   /**
    * Get the text aggregate of a node w/o resorting to
    * `$node.text()`
+   *
+   * @param {Cheerio}
+   * @return {Array}
+   *   The entire text aggregation of the instance’s
+   *   context node w/o the avoided parts.
    */
   aggregate( node=this.context ) {
     // Found the text and return it.
@@ -27,7 +32,7 @@ Object.assign( Finder.fn, {
 
       if (
         node::type() === 'tag' &&
-        this.boundaryFn && this.boundaryFn( node )
+        this.bdryFn && this.bdryFn( node )
       ) {
         ret[ ++i ] = innerText
         ret[ ++i ] = ''

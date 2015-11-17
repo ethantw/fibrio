@@ -2,25 +2,40 @@
 import Finder from './core'
 
 Object.assign( Finder.fn, {
-  set replacee( regex ) {
-    this.regex = typeof regex === 'string' ?
-      new RegExp(escapeReg( regex ), 'g' )
-    :
-    regex
+  set pattern( regex ) {
+    this.regex = typeof regex === 'string'
+    ? new RegExp(escapeReg( regex ), 'g' )
+    : regex
   },
 
-  get replacee() {
+  get pattern() {
     return this.regex
   },
 
-  find( regex ) {
-    this.replacee = regex
-    return this
+  /**
+   * Set up the text pattern for the finder to process.
+   *
+   * @param {String|RegExp}
+   * @param {Boolean} [returnMatch=false]
+   * @return {Fibre|Array}
+   *   The instance or the matches (array) depends on
+   *   the second @param, `returnMatch`
+   */
+  find( regex, returnMatch=false ) {
+    this.pattern = regex
+    const ret = this.grep()
+    return returnMatch === true ? ret : this
   },
 
+  /**
+   * Gre(p) the matches with the text aggregation.
+   *
+   * @return {Array}
+   *   The matches within the instance’s context node
+   */
   grep() {
     const aggr    = this.text
-    const regex   = this.replacee
+    const regex   = this.pattern
     const prepMat = this.prepMat
 
     let mat
@@ -54,12 +69,18 @@ Object.assign( Finder.fn, {
     return match
   },
 
+  /**
+   * Prepare the single match object with the its
+   * metadata.
+   *
+   * @return {Object} Match
+   */
   prepMat( mat, matIdx, offset ) {
     if ( !mat[0] )  throw new Error( 'Fibre cannot handle zero-length matches' )
 
     mat.idx      = mat.index
-    mat.endIdx   = offset + mat.idx + mat[0].length
     mat.startIdx = offset + mat.idx
+    mat.endIdx   = offset + mat.idx + mat[0].length
 
     mat.idx = mat.index = matIdx
     return mat
