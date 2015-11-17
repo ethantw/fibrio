@@ -8,9 +8,8 @@ Object.assign( Finder.fn, {
   context:  undefined,
   phase:    [],
   selector: {
-    filter:   [],
-    avoid:    [],
-    boundary: [],
+    avoid: new Set( Finder.ELMT.NON_TEXT ),
+    bdry:  new Set( Finder.ELMT.BDRY ),
   },
 })
 

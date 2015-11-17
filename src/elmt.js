@@ -1,7 +1,7 @@
 
 import Finder from './core'
 
-const NON_PROSE_ELMT = new Set([
+const NON_TEXT = new Set([
   'br', 'hr',
   // Media and Source elmtents
   'script', 'style', 'img', 'video', 'audio', 'canvas', 'svg', 'map', 'object',
@@ -9,7 +9,7 @@ const NON_PROSE_ELMT = new Set([
   'input', 'textarea', 'select', 'option', 'optgroup', 'button',
 ])
 
-const NON_CONTIGUOUS_PROSE_ELMT = new Set([
+const BDRY = new Set([
   // Block elmtents
   'address', 'article', 'aside', 'blockquote', 'dd', 'div',
   'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3',
@@ -25,26 +25,8 @@ const NON_CONTIGUOUS_PROSE_ELMT = new Set([
   'table', 'tbody', 'thead', 'th', 'tr', 'td', 'caption', 'col', 'tfoot', 'colgroup',
 ])
 
-const NON_INLINE_PROSE = ( elmt ) => {
-  return NON_CONTIGUOUS_PROSE_ELMT.has( elmt.tagName )
-}
+const ELMT = { NON_TEXT, BDRY }
 
-const PRESET = {
-  prose: {
-    forceContext: NON_INLINE_PROSE,
-    elmtFilter: ( elmt ) => {
-      return !NON_PROSE_ELMT.has( elmt.tagName )
-    },
-  },
-}
-
-const assignee = {
-  NON_PROSE_ELMT,
-  NON_CONTIGUOUS_PROSE_ELMT,
-  NON_INLINE_PROSE,
-  PRESET,
-}
-
-Object.assign( Finder, assignee )
-export default assignee
+Object.assign( Finder, { ELMT })
+export default ELMT
 
