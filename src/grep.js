@@ -1,17 +1,8 @@
 
 import Finder from './core'
+import escapeReg from './fn/escapeReg'
 
 Object.assign( Finder.fn, {
-  set pattern( regex ) {
-    this.regex = typeof regex === 'string'
-    ? new RegExp(escapeReg( regex ), 'g' )
-    : regex
-  },
-
-  get pattern() {
-    return this.regex
-  },
-
   /**
    * Set up the text pattern for the finder to process.
    *
@@ -35,8 +26,10 @@ Object.assign( Finder.fn, {
    */
   grep() {
     const aggr    = this.text
-    const regex   = this.pattern
     const prepMat = this.prepMat
+    const regex   = typeof this.pattern === 'string'
+    ? new RegExp(escapeReg( this.pattern ), 'g' )
+    : this.pattern
 
     let mat
     let matIdx = 0
