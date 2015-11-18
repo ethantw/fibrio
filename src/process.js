@@ -31,7 +31,7 @@ Object.assign( Finder.fn, {
     let nodeStack    = [ context ]
     let doAvoidNode
 
-    this.phase.push( context.html())
+    this.phase.push( this.html )
 
     out: while ( true ) {
       if ( current::type() === 'text' ) {

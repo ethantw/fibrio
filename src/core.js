@@ -4,8 +4,9 @@ import { prop }  from './fn/manipulate'
 import setAct    from './fn/setAct'
 
 // NPM modules:
-const $   = IMPORT( 'cheerio' )
-const $fn = $.prototype
+const $    = IMPORT( 'cheerio' )
+const $fn  = $.prototype
+const root = html => $( `<fibre-root>${html}</fibre-root>` )
 
 class Finder {
   /**
@@ -18,7 +19,7 @@ class Finder {
    */
   constructor( html, noPreset=false ) {
     this.ohtml   = html
-    this.context = $( `<fibre-root>${html}</fibre-root>` )
+    this.context = root( html )
 
     if ( noPreset === true ) {
       this.selector.avoid.clear()
@@ -250,6 +251,31 @@ class Finder {
   render() {
     this.process()
     return this.html
+  }
+
+  revert( level=1 ) {
+    level = Number.parseInt( level, 10 )
+
+    if ( level === 1 ) {
+      this.context = root( this.phase.pop())
+      return this
+    }
+
+    let length  = this.phase.length
+    let lastIdx = length - 1
+    let all = ( level >= length || Number.isNaN( level ))
+      ? true : false
+
+    if ( all ) {
+      this.phase   = [ this.ohtml ]
+      this.context = root( this.ohtml )
+      return this
+    }
+
+    this.context = root(
+      this.phase.splice( lastIdx-level, length )[0]
+    )
+    return this
   }
 }
 
