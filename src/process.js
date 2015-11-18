@@ -20,6 +20,8 @@ Object.assign( Finder.fn, {
     let match   = this.match
     let context = this.context
 
+    if ( match.length === 0 )  return this
+
     let startPortion
     let endPortion
     let innerPortion = []
