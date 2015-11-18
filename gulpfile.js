@@ -24,11 +24,11 @@ gulp.task( 'index.js', [ 'pack' ], function() {
   .pipe(concat( 'index.js', {
     process: function( src ) {
       return (
-        'function EXPORT_ONCE( Fn ) { module.exports = Fn }\n\n' +
-        'void' +
         src
         .replace( /IMPORT/g, 'require' )
-        .replace( /@VERSION/g, pkg.version )
+        .replace( /@VERSION/g, pkg.version ) + '\n' +
+        'function IMPORT( mod ) { return require( mod ) }\n' +
+        'function EXPORT_ONCE( mod ) { module.exports = mod }\n'
       )
     }
   }))
