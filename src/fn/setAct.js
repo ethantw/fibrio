@@ -10,7 +10,7 @@
  *   CSS selector to be added to or deleted from the set.
  */
 export default function ( action, selector ) {
-  if ( /^(add|delete)$/i.test( action )) {
+  if ( !/^(add|delete)$/i.test( action )) {
     return this
   }
 
