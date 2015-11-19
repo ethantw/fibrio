@@ -31,7 +31,7 @@ Object.assign( Finder.fn, {
       let innerText = this.aggregate( node )
 
       if (
-        node::type() === 'tag' &&
+        /^(tag|script|style)$/i.test( node::type()) &&
         this.bdryFn && this.bdryFn( node )
       ) {
         ret[ ++i ] = innerText
