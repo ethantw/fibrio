@@ -5,10 +5,10 @@ Object.assign( Finder.fn, {
   version:     '@VERSION',
   portionMode: 'retain',
   context:     undefined,
+
+  avoid:       new Set( Finder.ELMT.NON_TEXT ),
+  bdry:        new Set( Finder.ELMT.BDRY ),
+
   phase:       [],
-  selector: {
-    avoid: new Set( Finder.ELMT.NON_TEXT ),
-    bdry:  new Set( Finder.ELMT.BDRY ),
-  },
 })
 

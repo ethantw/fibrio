@@ -5,7 +5,6 @@ import setAct    from './fn/setAct'
 
 // NPM modules:
 const $    = IMPORT( 'cheerio' )
-const $fn  = $.prototype
 const root = html => $( `<fibre-root>${html}</fibre-root>` )
 
 class Finder {
@@ -22,8 +21,8 @@ class Finder {
     this.context = root( html )
 
     if ( noPreset === true ) {
-      this.selector.avoid.clear()
-      this.selector.bdry.clear()
+      this.avoid = new Set()
+      this.bdry  = new Set()
     }
   }
 
@@ -37,11 +36,14 @@ class Finder {
    *   The Selectors to be matched.
    */
   static matches( node, selector ) {
-    if ( typeof node === 'string' ) {
-      node = $( node )
-    }
-    if ( typeof node === 'object' ) {
-      return node::$fn.is( selector )
+    node = $( node )
+
+    if (
+      typeof node === 'object' &&
+      node.is &&
+      typeof node.is === 'function'
+    ) {
+      return node.is( selector )
     }
     return false
   }
@@ -83,7 +85,7 @@ class Finder {
    * @param {Cheerio|CheerioDOMObject}
    */
   filterFn( node ) {
-    const avoid = this.selector.avoid || new Set()
+    const avoid = this.avoid || new Set()
     if ( avoid.has( node::prop( 'name' )))  return false
 
     const selector = Array.from( avoid )
@@ -101,7 +103,8 @@ class Finder {
    * @param {Cheerio|CheerioDOMObject}
    */
   bdryFn( node ) {
-    const bdry = this.selector.bdry || new Set()
+    const bdry = this.bdry || new Set()
+    if ( bdry.has( '*' ))                  return true
     if ( bdry.has( node::prop( 'name' )))  return true
 
     const selector = Array.from( bdry )
@@ -118,26 +121,33 @@ class Finder {
    * @param {String|Array} CSS selectors
    */
   addAvoid( selector ) {
-    this.selector.avoid
-      ::setAct( 'add', selector )
+    if ( !this.hasOwnProperty( 'avoid' )) {
+      this.avoid = new Set( Finder.ELMT.NON_TEXT )
+    }
+
+    this.avoid::setAct( 'add', selector )
     return this
   }
 
   /**
-   * Remove the configured CSS selectors in the instance
-   * avoid.
+   * Remove the avoiding CSS selectors
    *
    * @param {String|Array|null}
    *   CSS selectors
-   *   Or, if not set, clear the entire avoid set.
+   *   Or, if left blank, the method clears the entire
+   *   avoiding selector set.
    */
   removeAvoid( selector ) {
-    this.selector.avoid
-      ::setAct( 'delete', selector )
+    if ( !this.hasOwnProperty( 'avoid' )) {
+      this.avoid = new Set( Finder.ELMT.NON_TEXT )
+    }
 
     if ( typeof selector === 'undefined' ) {
-      this.selector.bdry.clear()
+      this.bdry.clear()
+      return this
     }
+
+    this.avoid::setAct( 'delete', selector )
     return this
   }
 
@@ -149,26 +159,33 @@ class Finder {
    * @param {String|Array|null} CSS selectors
    */
   addBdry( selector ) {
-    this.selector.bdry
-      ::setAct( 'add', selector )
+    if ( !this.hasOwnProperty( 'bdry' )) {
+      this.bdry = new Set( Finder.ELMT.BDRY )
+    }
+
+    this.bdry::setAct( 'add', selector )
     return this
   }
 
   /**
-   * Remove the assigned boundary CSS selectors
-   * from the instance.
+   * Remove the boundary CSS selectors
    *
    * @param {String|Array|null}
    *   CSS selectors
-   *   Or, if not set, clear the entire boundary set.
+   *   Or, if left blank, the method clears the entire
+   *   boundary selector set.
    */
   removeBdry( selector ) {
-    this.selector.bdry
-      ::setAct( 'delete', selector )
+    if ( !this.hasOwnProperty( 'bdry' )) {
+      this.bdry = new Set( Finder.ELMT.BDRY )
+    }
 
     if ( typeof selector === 'undefined' ) {
-      this.selector.bdry.clear()
+      this.bdry.clear()
+      return this
     }
+
+    this.bdry::setAct( 'delete', selector )
     return this
   }
 
