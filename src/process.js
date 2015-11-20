@@ -45,7 +45,7 @@ Object.assign( Finder.fn, {
           endPortion = {
             node:         current,
             idx:          portionIdx++,
-            index:        portionIdx++,
+            index:        portionIdx,
             text:         current.data.substring( mat.startIdx - atIdx, mat.endIdx - atIdx ),
             idxInMat:     atIdx - mat.startIdx,
             endIdxInNode: mat.endIdx - atIdx,
@@ -59,7 +59,7 @@ Object.assign( Finder.fn, {
           innerPortion.push({
             node:      current,
             idx:       portionIdx++,
-            index:     portionIdx++,
+            index:     portionIdx,
             text:      current.data,
             idxInMat:  atIdx - mat.startIdx,
             // always zero for inner-portions
@@ -75,7 +75,7 @@ Object.assign( Finder.fn, {
           startPortion = {
             node:         current,
             idx:          portionIdx++,
-            index:        portionIdx++,
+            index:        portionIdx,
             idxInMat:     0,
             idxInNode:    mat.startIdx - atIdx,
             endIdxInNode: mat.endIdx - atIdx,
@@ -86,12 +86,14 @@ Object.assign( Finder.fn, {
       }
 
       doAvoidNode = (
-        current::type() === 'tag' &&
+        /^(tag|style|script)$/i.test( current::type()) &&
         this.filterFn &&
         !this.filterFn( current )
       )
 
       if ( startPortion && endPortion ) {
+        let old = Object.assign( {}, current )
+
         // Method `replaceMat` returns the end portion node,
         // and then we continue the recursion from its next
         // node.
@@ -111,13 +113,35 @@ Object.assign( Finder.fn, {
         // No more matches.
         if ( !mat )  break
 
-        // Whilst the element of the end portion has been
-        // completely re-rendered and nowhere to be found.
+        // We have to update `nodeStack` once the current
+        // element is re-rendered from its parental side via
+        // `$parent.html( newHTML )` method.
         if ( current.rerendered && !current::next()) {
-          nodeStack.pop()
-          nodeStack.push(
-            context.find( current::parent())
-          )
+          // The `rerenderedLevel` variable here is to
+          // indicate how many level we have to go back.
+          let rerenderedLevel = 1
+          {
+            let cloned = Array.from( nodeStack )
+
+            cloned.shift() // Omit the root element
+            cloned.pop()   // Omit current text node’s parent element
+
+            while ( $.contains( cloned.pop(), old )) {
+              rerenderedLevel++
+            }
+          }
+
+          let len    = nodeStack.length
+          let last   = context.find( current )
+          let update = []
+
+          for ( let i = 0, l = rerenderedLevel; i < l; i++ ) {
+            last = last.parent()
+            update.unshift( last )
+          }
+
+          nodeStack.splice( len - rerenderedLevel, len )
+          nodeStack = nodeStack.concat( update )
         }
 
       // Move down

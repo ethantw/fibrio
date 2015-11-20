@@ -19,6 +19,7 @@ class Finder {
   constructor( html, noPreset=false ) {
     this.ohtml   = html
     this.context = root( html )
+    this.phase   = []
 
     if ( noPreset === true ) {
       this.avoid = new Set()

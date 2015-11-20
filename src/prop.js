@@ -8,7 +8,5 @@ Object.assign( Finder.fn, {
 
   avoid:       new Set( Finder.ELMT.NON_TEXT ),
   bdry:        new Set( Finder.ELMT.BDRY ),
-
-  phase:       [],
 })
 
