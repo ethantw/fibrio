@@ -272,7 +272,9 @@ class Finder {
   }
 
   revert( level=1 ) {
-    level = Number.parseInt( level, 10 )
+    level = typeof level === 'string' && level === 'all'
+    ? 'all'
+    : Number.parseInt( level, 10 )
 
     if ( level === 1 ) {
       this.context = root( this.phase.pop())
@@ -281,8 +283,11 @@ class Finder {
 
     let length  = this.phase.length
     let lastIdx = length - 1
-    let all = ( level >= length || Number.isNaN( level ))
-      ? true : false
+    let all = (
+      level === 'all' ||
+      level >= length ||
+      Number.isNaN( level )
+    ) ? true : false
 
     if ( all ) {
       this.phase   = [ this.ohtml ]
