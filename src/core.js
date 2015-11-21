@@ -221,6 +221,7 @@ class Finder {
    */
   replace( ...arg ) {
     this.replacement = arg.pop()
+    this.wrapper     = null
     this.newActionProcessed = false
 
     if ( arg[0] )  this.find( arg[0] )
@@ -239,7 +240,8 @@ class Finder {
    *   The instance
    */
   wrap( ...arg ) {
-    this.wrapper = arg.pop()
+    this.wrapper     = arg.pop()
+    this.replacement = null
     this.newActionProcessed = false
 
     if ( arg[0] )  this.find( arg[0] )
