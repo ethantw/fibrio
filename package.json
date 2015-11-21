@@ -1,10 +1,10 @@
 {
   "name": "fibre-node",
   "version": "0.1.0",
-  "description": "Server-side string-like DOM text manipulator.",
+  "description": "Server-side DOM text manipulator (Node.js).",
   "main": "index.js",
   "scripts": {
-    "test": "gulp test"
+    "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -12,7 +12,8 @@
   },
   "keywords": [
     "fibre.js",
-    "findAndReplaceDOMText"
+    "findAndReplaceDOMText",
+    "text-processing"
   ],
   "author": "Chen Yijun (@ethantw)",
   "license": "MIT",
@@ -30,9 +31,12 @@
     "gulp-concat-util": "^0.5.4",
     "gulp-connect": "^2.2.0",
     "gulp-util": "^3.0.7",
+    "mocha": "^2.3.4",
     "webpack": "^1.12.2"
   },
   "babel": {
-    "optional": [ "es7.functionBind" ]
+    "optional": [
+      "es7.functionBind"
+    ]
   }
 }

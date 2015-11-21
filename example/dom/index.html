@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Tests</title>
+  </head>
+
+<body>
+  LOL w Lol x LooOOoL y LOL z lOl
+  <p>LOL w LOOoOOl x LoL y LOL z lOl</p>
+  <div>
+    <p>xxx lo, ol</p>
+    <p class="x">LOL 1. <i>LOL</i>, meaning laughing out loud.</p>
+    <p>2. LOL, meaning laughing out loud.</p>
+    <p>3. XXX LOL <dfn>xx L<i>O</i>l yy</dfn>, meaning laughing out <em>loud</em>.</p>
+    <p>4. lL<b>O</b>Ll</p>
+    <p>5. Ll<b>Ol</b>L</p>
+
+    <q><i>x<b>xx</b>xx</i>x<em>yyy</em><b>xxx</b><i>xxxxx</i></q>
+    <p>She played him.</p>
+  </div>
+  <i>He played yyy and said LOL.</i>
+  text in body...lol
+  <div>
+    xxx
+    <p>ooo
+    <article>
+      <p>1
+      <p>2
+    </article>
+  </div>
+    <style>
+  // lol
+  p {  color: #333;  }
+    </style>
+</body>l
+  <script>
+console.time( 'Test' )
+  </script>
+  <script src="./findandreplacedomtext.js"></script>
+  <script>
+
+var body = document.body
+var div = body.querySelector( 'div' )
+
+findAndReplaceDOMText( body, {
+  find: /lo+l/gi,
+  replace: '($&)',
+  wrap: 'u'
+})
+
+findAndReplaceDOMText( body, {
+  find: /\b([\w]+(ing|ed))\b/gi,
+  wrap: 'b',
+  replace: '[$1[$2]]'
+})
+console.timeEnd( 'Test' )
+  </script>
+  </body>
+</html>
