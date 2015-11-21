@@ -6,9 +6,19 @@ const server  = require( 'gulp-connect' ).server
 const webpack = require( 'webpack' )
 
 const pkg     = require( './package.json' )
+const banner  = '' +
+  '/*!\n' +
+  ' * Fibre-node v' + pkg.version + '\n' +
+  ' * Chen Yijun (@ethantw) | MIT License\n' +
+  ' * https://github.com/ethantw/fibre-node\n' +
+  ' *\n' +
+  ' * Original algorithm from:\n' +
+  ' * https://github.com/padolsey/findAndReplaceDOMText\n' +
+  ' */\n\n'
 
 // Unified tasks
-gulp.task( 'default', [ 'index.js' ])
+gulp.task( 'default', [ 'build' ])
+gulp.task( 'build',   [ 'index.js' ])
 gulp.task( 'dev',     [ 'default', 'server', 'watch' ])
 
 gulp.task( 'server', function() {
@@ -24,7 +34,7 @@ gulp.task( 'index.js', [ 'pack' ], function() {
   .pipe(concat( 'index.js', {
     process: function( src ) {
       return (
-        src
+        banner + src
         .replace( /IMPORT/g, 'require' )
         .replace( /@VERSION/g, pkg.version ) + '\n' +
         'function IMPORT( mod ) { return require( mod ) }\n' +
