@@ -668,6 +668,8 @@
 	    return this;
 	  }
 
+	  action = action.toLowerCase();
+
 	  if (typeof selector === 'string') {
 	    selector = selector.replace(/\,\s*/, ',').split(',');
 	  }

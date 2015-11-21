@@ -6,15 +6,16 @@ const server  = require( 'gulp-connect' ).server
 const webpack = require( 'webpack' )
 
 const pkg     = require( './package.json' )
-const banner  = '' +
-  '/*!\n' +
-  ' * Fibre-node v' + pkg.version + '\n' +
-  ' * Chen Yijun (@ethantw) | MIT License\n' +
-  ' * https://github.com/ethantw/fibre-node\n' +
-  ' *\n' +
-  ' * Original algorithm from:\n' +
-  ' * https://github.com/padolsey/findAndReplaceDOMText\n' +
-  ' */\n\n'
+const banner  = (
+`/*!
+ * Fibre-node v0.1.0
+ * Chen Yijun (@ethantw) | MIT License
+ * https://github.com/ethantw/fibre-node
+ *
+ * Original algorithm from:
+ * https://github.com/padolsey/findAndReplaceDOMText
+ */\n
+` )
 
 // Unified tasks
 gulp.task( 'default', [ 'build' ])
