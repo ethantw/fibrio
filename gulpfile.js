@@ -8,9 +8,9 @@ const webpack = require( 'webpack' )
 const pkg     = require( './package.json' )
 const banner  = (
 `/*!
- * Fibre-node v0.1.0
+ * Fibrio v0.1.0
  * Chen Yijun (@ethantw) | MIT License
- * https://github.com/ethantw/fibre-node
+ * https://github.com/ethantw/fibrio
  *
  * Original algorithm from:
  * https://github.com/padolsey/findAndReplaceDOMText

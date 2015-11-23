@@ -8,7 +8,7 @@ Object.assign( Finder.fn, {
    *
    * @param {String|RegExp}
    * @param {Boolean} [returnMatch=false]
-   * @return {Fibre|Array}
+   * @return {Fibrio|Array}
    *   The instance or the matches (array) depends on
    *   the second @param, `returnMatch`
    */
@@ -69,7 +69,7 @@ Object.assign( Finder.fn, {
    * @return {Object} Match
    */
   prepMat( mat, matIdx, offset ) {
-    if ( !mat[0] )  throw new Error( 'Fibre cannot handle zero-length matches' )
+    if ( !mat[0] )  throw new Error( 'Fibrio cannot handle zero-length matches' )
 
     mat.idx      = mat.index
     mat.startIdx = offset + mat.idx

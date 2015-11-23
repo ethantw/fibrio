@@ -67,14 +67,14 @@ let mani = {
     const idxAfter  = idxBefore + content.contents().length
 
     this::mani.replaceWith(
-      `<fibre-fake>${
+      `<fibrio-fake>${
         $.html( content ) +
         $.html( this )
-      }</fibre-fake>`
+      }</fibrio-fake>`
     )
 
     parent.children = Array.from($(
-      $.html( parent ).replace( /<\/?fibre\-fake>/gi, '' )
+      $.html( parent ).replace( /<\/?fibrio\-fake>/gi, '' )
     ).contents())
 
     return parent.children[ idxAfter ]
@@ -130,7 +130,7 @@ let mani = {
   },
 
   createText( text ) {
-    return $( `<fibre-text>${ text }</fibre-text>` )
+    return $( `<fibrio-text>${ text }</fibrio-text>` )
   },
 }
 

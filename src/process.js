@@ -14,7 +14,7 @@ Object.assign( Finder.fn, {
    * Process (wrap/replace) the matched text with the
    * instance’s previous set wrapper/replacement.
    *
-   * @return {Fibre} The instance
+   * @return {Fibrio} The instance
    */
   processMatch() {
     let match   = this.match
@@ -186,8 +186,8 @@ Object.assign( Finder.fn, {
     let preceeding = ''
     let following  = ''
     let label      = [
-      `{{fibre-replacement: ${Date.now()}}}`,
-      `{{fibre-replacement: ${Date.now()}}}[[end]]`,
+      `{{fibrio-replacement: ${Date.now()}}}`,
+      `{{fibrio-replacement: ${Date.now()}}}[[end]]`,
     ]
 
     if ( matStartNode === matEndNode ) {
@@ -252,7 +252,7 @@ Object.assign( Finder.fn, {
 
       let last = this.getPortionReplacementElmt(
         endPortion, mat
-      ).attr( 'data-fibre-mat-elmt', 'last' )::html()
+      ).attr( 'data-fibrio-mat-elmt', 'last' )::html()
 
       matStartNode.data = label[0]
       matEndNode.data   = label[1]
@@ -272,8 +272,8 @@ Object.assign( Finder.fn, {
       )
 
       let ret = ( areNotEqual ? matEndElmt : matStartElmt )
-        .find( '[data-fibre-mat-elmt="last"]' )
-        .removeAttr( 'data-fibre-mat-elmt' )[0]
+        .find( '[data-fibrio-mat-elmt="last"]' )
+        .removeAttr( 'data-fibrio-mat-elmt' )[0]
 
       if ( !ret::next())  ret.rerendered = true
       return ret

@@ -5,7 +5,7 @@ import setAct    from './fn/setAct'
 
 // NPM modules:
 const $    = IMPORT( 'cheerio' )
-const root = html => $( `<fibre-root>${html}</fibre-root>` )
+const root = html => $( `<fibrio-root>${html}</fibrio-root>` )
 
 class Finder {
   /**
@@ -14,7 +14,7 @@ class Finder {
    *
    * @param {String} HTML string
    * @param {Boolean} [noPreset=false]
-   * @return {Fibre} The instance itself
+   * @return {Fibrio} The instance itself
    */
   constructor( html, noPreset=false ) {
     this.ohtml   = html
@@ -59,7 +59,7 @@ class Finder {
 
   get html() {
     return this.context.html()
-      .replace( /<\/?fibre\-text>/gi, '' )
+      .replace( /<\/?fibrio\-text>/gi, '' )
   }
 
   /**
@@ -195,7 +195,7 @@ class Finder {
    * procedure for future processing.
    *
    * @param {Object} Actions
-   * @return {Fibre} The instance
+   * @return {Fibrio} The instance
    */
   action( action ) {
     if ( typeof action !== 'object' )  return this
@@ -216,7 +216,7 @@ class Finder {
    *   A pattern for the Finder to grep
    * @arg {String|Function}
    *   What to replace each match with
-   * @return {Fibre}
+   * @return {Fibrio}
    *   The instance
    */
   replace( ...arg ) {
@@ -236,7 +236,7 @@ class Finder {
    *   A pattern for the Finder to grep
    * @arg {String|Function}
    *   What to wrap each match with
-   * @return {Fibre}
+   * @return {Fibrio}
    *   The instance
    */
   wrap( ...arg ) {
@@ -251,7 +251,7 @@ class Finder {
   /**
    * Process (replace/wrap) the matched text.
    *
-   * @return {Fibre} The instance
+   * @return {Fibrio} The instance
    */
   process() {
     if ( this.newActionProcessed === false ) {

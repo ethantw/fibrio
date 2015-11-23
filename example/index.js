@@ -1,12 +1,12 @@
 
 'use strict'
 
-// const Fibre = require( 'fibro' )
-const Fibre = require( '..' )
+// const Fibrio = require( 'fibrio' )
+const Fibrio = require( '..' )
 
-console.time( 'Fibre' )
+console.time( 'Fibrio' )
 
-let fib = Fibre( `
+let fib = Fibrio( `
 <!-- LOL LOOOOL LOL -->
 L<i>OL</i> w Lol x LoooooL y LOL z lOl
 <p>L<i>OOooO</i>L w Lol x LoL y LOL z lOl</p>
@@ -70,5 +70,5 @@ fib
 .wrap( /foobar/gi, 'match' )
 
 console.log( fib.render())
-console.timeEnd( 'Fibre' )
+console.timeEnd( 'Fibrio' )
 

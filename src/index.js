@@ -3,19 +3,19 @@ import Finder from './core'
 import ELMT   from './elmt'
 import './init'
 
-let Fibre = ( ...arg ) => new Finder( ...arg )
+let Fibrio = ( ...arg ) => new Finder( ...arg )
 
-Object.assign( Fibre, {
+Object.assign( Fibrio, {
   ELMT,
   fn:      Finder.prototype,
   matches: Finder.matches,
 })
 
-Fibre.Fibre = Fibre.version = '@VERSION'
+Fibrio.Fibrio = Fibrio.version = '@VERSION'
 
 // ES6 module
-export default Fibre
+export default Fibrio
 
 // NPM (CommonJS) module
-EXPORT_ONCE( Fibre )
+EXPORT_ONCE( Fibrio )
 

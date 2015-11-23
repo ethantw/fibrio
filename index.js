@@ -1,7 +1,7 @@
 /*!
- * Fibre-node v0.1.0
+ * Fibrio v0.1.0
  * Chen Yijun (@ethantw) | MIT License
- * https://github.com/ethantw/fibre-node
+ * https://github.com/ethantw/fibrio
  *
  * Original algorithm from:
  * https://github.com/padolsey/findAndReplaceDOMText
@@ -72,7 +72,7 @@
 
 	__webpack_require__(6);
 
-	var Fibre = function Fibre() {
+	var Fibrio = function Fibrio() {
 	  for (var _len = arguments.length, arg = Array(_len), _key = 0; _key < _len; _key++) {
 	    arg[_key] = arguments[_key];
 	  }
@@ -80,19 +80,19 @@
 	  return new (_bind.apply(_core2['default'], [null].concat(arg)))();
 	};
 
-	Object.assign(Fibre, {
+	Object.assign(Fibrio, {
 	  ELMT: _elmt2['default'],
 	  fn: _core2['default'].prototype,
 	  matches: _core2['default'].matches
 	});
 
-	Fibre.Fibre = Fibre.version = '0.1.0';
+	Fibrio.Fibrio = Fibrio.version = '0.1.0';
 
 	// ES6 module
-	exports['default'] = Fibre;
+	exports['default'] = Fibrio;
 
 	// NPM (CommonJS) module
-	EXPORT_ONCE(Fibre);
+	EXPORT_ONCE(Fibrio);
 	module.exports = exports['default'];
 
 /***/ },
@@ -124,7 +124,7 @@
 	// NPM modules:
 	var $ = require('cheerio');
 	var root = function root(html) {
-	  return $('<fibre-root>' + html + '</fibre-root>');
+	  return $('<fibrio-root>' + html + '</fibrio-root>');
 	};
 
 	var Finder = (function () {
@@ -134,7 +134,7 @@
 	   *
 	   * @param {String} HTML string
 	   * @param {Boolean} [noPreset=false]
-	   * @return {Fibre} The instance itself
+	   * @return {Fibrio} The instance itself
 	   */
 
 	  function Finder(html) {
@@ -316,7 +316,7 @@
 	     * procedure for future processing.
 	     *
 	     * @param {Object} Actions
-	     * @return {Fibre} The instance
+	     * @return {Fibrio} The instance
 	     */
 	  }, {
 	    key: 'action',
@@ -339,7 +339,7 @@
 	     *   A pattern for the Finder to grep
 	     * @arg {String|Function}
 	     *   What to replace each match with
-	     * @return {Fibre}
+	     * @return {Fibrio}
 	     *   The instance
 	     */
 	  }, {
@@ -365,7 +365,7 @@
 	     *   A pattern for the Finder to grep
 	     * @arg {String|Function}
 	     *   What to wrap each match with
-	     * @return {Fibre}
+	     * @return {Fibrio}
 	     *   The instance
 	     */
 	  }, {
@@ -386,7 +386,7 @@
 	    /**
 	     * Process (replace/wrap) the matched text.
 	     *
-	     * @return {Fibre} The instance
+	     * @return {Fibrio} The instance
 	     */
 	  }, {
 	    key: 'process',
@@ -449,7 +449,7 @@
 	  }, {
 	    key: 'html',
 	    get: function get() {
-	      return this.context.html().replace(/<\/?fibre\-text>/gi, '');
+	      return this.context.html().replace(/<\/?fibrio\-text>/gi, '');
 	    }
 	  }], [{
 	    key: 'matches',
@@ -577,9 +577,9 @@
 	    var idxBefore = parent.children.indexOf(this);
 	    var idxAfter = idxBefore + content.contents().length;
 
-	    mani.replaceWith.call(this, '<fibre-fake>' + ($.html(content) + $.html(this)) + '</fibre-fake>');
+	    mani.replaceWith.call(this, '<fibrio-fake>' + ($.html(content) + $.html(this)) + '</fibrio-fake>');
 
-	    parent.children = Array.from($($.html(parent).replace(/<\/?fibre\-fake>/gi, '')).contents());
+	    parent.children = Array.from($($.html(parent).replace(/<\/?fibrio\-fake>/gi, '')).contents());
 
 	    return parent.children[idxAfter];
 	  },
@@ -633,7 +633,7 @@
 	  },
 
 	  createText: function createText(text) {
-	    return $('<fibre-text>' + text + '</fibre-text>');
+	    return $('<fibrio-text>' + text + '</fibrio-text>');
 	  }
 	};
 
@@ -847,7 +847,7 @@
 	   *
 	   * @param {String|RegExp}
 	   * @param {Boolean} [returnMatch=false]
-	   * @return {Fibre|Array}
+	   * @return {Fibrio|Array}
 	   *   The instance or the matches (array) depends on
 	   *   the second @param, `returnMatch`
 	   */
@@ -908,7 +908,7 @@
 	   * @return {Object} Match
 	   */
 	  prepMat: function prepMat(mat, matIdx, offset) {
-	    if (!mat[0]) throw new Error('Fibre cannot handle zero-length matches');
+	    if (!mat[0]) throw new Error('Fibrio cannot handle zero-length matches');
 
 	    mat.idx = mat.index;
 	    mat.startIdx = offset + mat.idx;
@@ -940,7 +940,7 @@
 	   * Process (wrap/replace) the matched text with the
 	   * instance’s previous set wrapper/replacement.
 	   *
-	   * @return {Fibre} The instance
+	   * @return {Fibrio} The instance
 	   */
 	  processMatch: function processMatch() {
 	    var match = this.match;
@@ -1113,7 +1113,7 @@
 
 	    var preceeding = '';
 	    var following = '';
-	    var label = ['{{fibre-replacement: ' + Date.now() + '}}', '{{fibre-replacement: ' + Date.now() + '}}[[end]]'];
+	    var label = ['{{fibrio-replacement: ' + Date.now() + '}}', '{{fibrio-replacement: ' + Date.now() + '}}[[end]]'];
 
 	    if (matStartNode === matEndNode) {
 	      var _context7;
@@ -1171,7 +1171,7 @@
 	          (_context9 = portion.node, _fnManipulate.replaceWith).call(_context9, _this.getPortionReplacementElmt(portion, mat));
 	        }
 
-	        var last = (_context8 = _this.getPortionReplacementElmt(endPortion, mat).attr('data-fibre-mat-elmt', 'last'), _fnManipulate.html).call(_context8);
+	        var last = (_context8 = _this.getPortionReplacementElmt(endPortion, mat).attr('data-fibrio-mat-elmt', 'last'), _fnManipulate.html).call(_context8);
 
 	        matStartNode.data = label[0];
 	        matEndNode.data = label[1];
@@ -1183,7 +1183,7 @@
 
 	        matEndElmt.html((matEndElmt.html() || '').replace(label[1], last + following));
 
-	        var ret = (areNotEqual ? matEndElmt : matStartElmt).find('[data-fibre-mat-elmt="last"]').removeAttr('data-fibre-mat-elmt')[0];
+	        var ret = (areNotEqual ? matEndElmt : matStartElmt).find('[data-fibrio-mat-elmt="last"]').removeAttr('data-fibrio-mat-elmt')[0];
 
 	        if (!_fnManipulate.next.call(ret)) ret.rerendered = true;
 	        return {
