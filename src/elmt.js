@@ -2,6 +2,9 @@
 import Finder from './core'
 
 const NON_TEXT = new Set([
+  // Outside `<body>`
+  'head', 'title',
+  // Line-breaks and rules
   'br', 'hr',
   // Media and Source elmtents
   'script', 'style', 'img', 'video', 'audio', 'canvas', 'svg', 'map', 'object',

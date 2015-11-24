@@ -699,7 +699,11 @@
 
 	var _core2 = _interopRequireDefault(_core);
 
-	var NON_TEXT = new Set(['br', 'hr',
+	var NON_TEXT = new Set([
+	// Outside `<body>`
+	'head', 'title',
+	// Line-breaks and rules
+	'br', 'hr',
 	// Media and Source elmtents
 	'script', 'style', 'img', 'video', 'audio', 'canvas', 'svg', 'map', 'object',
 	// Input elmtents
