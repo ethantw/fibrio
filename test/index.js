@@ -27,6 +27,10 @@ desc( 'Namespace', () => {
     'Fibrio identifier and versioning',
     () => eq( Fibrio.Fibrio, Fibrio.version )
   )
+
+  it( 'Whose instance', () => {
+    eq( Fibrio( '<html></html>' ) instanceof Fibrio.finder, true )
+  })
 })
 
 let tester = {

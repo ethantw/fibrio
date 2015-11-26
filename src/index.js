@@ -7,6 +7,7 @@ let Fibrio = ( ...arg ) => new Finder( ...arg )
 
 Object.assign( Fibrio, {
   ELMT,
+  finder:  Finder,
   fn:      Finder.prototype,
   matches: Finder.matches,
 })

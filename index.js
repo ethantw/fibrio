@@ -3,7 +3,7 @@
  * Chen Yijun (@ethantw) | MIT License
  * https://github.com/ethantw/fibrio
  *
- * Original algorithm from:
+ * Original algorithms from:
  * https://github.com/padolsey/findAndReplaceDOMText
  */
 
@@ -82,6 +82,7 @@
 
 	Object.assign(Fibrio, {
 	  ELMT: _elmt2['default'],
+	  finder: _core2['default'],
 	  fn: _core2['default'].prototype,
 	  matches: _core2['default'].matches
 	});

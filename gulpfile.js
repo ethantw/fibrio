@@ -12,7 +12,7 @@ const banner  = (
  * Chen Yijun (@ethantw) | MIT License
  * https://github.com/ethantw/fibrio
  *
- * Original algorithm from:
+ * Original algorithms from:
  * https://github.com/padolsey/findAndReplaceDOMText
  */\n
 ` )
