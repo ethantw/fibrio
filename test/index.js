@@ -190,7 +190,7 @@ desc( 'Finding', () => {
     htmlEq( fib.render(), '<a class=c>foo</a><b>bar</b> <b><x>foo</x></b><a><x>bar</x></a>' )
   })
 
-  it( 'Preset context boudaries', () => {
+  it( 'Preset context boundaries', () => {
     let fib = Fibrio( '<p>Some</p>Thing<em>Some<span>Thing</span></em><div>Some</div>Thing' )
       .wrap( /something/gi, 'x' )
     htmlEq( fib.html, '<p>some</p>thing<em><x>some</x><span><x>thing</x></span></em><div>some</div>thing' )
