@@ -16,9 +16,12 @@ Object.assign( Finder.fn, {
    *
    * @return {Fibrio} The instance
    */
-  processMatch() {
-    let match   = this.match
-    let context = this.context
+  processMatch( item={
+    match:   this.match,
+    context: this.context,
+  }) {
+    let match   = item.match
+    let context = item.context
 
     if ( match.length === 0 )  return this
 
@@ -32,8 +35,6 @@ Object.assign( Finder.fn, {
     let portionIdx   = 0
     let nodeStack    = [ context ]
     let doAvoidNode
-
-    this.phase.push( this.html )
 
     out: while ( true ) {
       if ( current::type() === 'text' ) {
@@ -100,7 +101,7 @@ Object.assign( Finder.fn, {
         atIdx -= ( endPortion.node.data.length - endPortion.endIdxInNode )
 
         current = this.replaceMat(
-          mat, startPortion, innerPortion, endPortion
+          context, mat, startPortion, innerPortion, endPortion
         )
 
         startPortion = null
@@ -178,8 +179,7 @@ Object.assign( Finder.fn, {
    *
    * @return {CheerioDOMObject}
    */
-  replaceMat( mat, startPortion, innerPortion, endPortion ) {
-    let context      = this.context
+  replaceMat( context, mat, startPortion, innerPortion, endPortion ) {
     let matStartNode = startPortion.node
     let matEndNode   = endPortion.node
 

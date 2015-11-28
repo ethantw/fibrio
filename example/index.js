@@ -12,6 +12,8 @@ L<i>OL</i> w Lol x LoooooL y LOL z lOl
 <p>L<i>OOooO</i>L w Lol x LoL y LOL z lOl</p>
 <body>
 <div>
+  lool
+  looo<a>OOl</a>
   <p>xxx lo, ol</p>
   <p>lol lol LoooOOL lO<u>OO</u>ool loOOooL</p>
   <p>LooOoLing</p>
@@ -44,6 +46,7 @@ text in body...lol
 p {  color: #333;  }
 </style>
 
+<div>
 foo<small>ba<i>r</i></small>
 foo<small>b<i>a<b>r</b></i></small>
 <em>fooba</em>r
@@ -51,12 +54,14 @@ foo<strong>ba</strong>r
 foo<sup>bar</sup>
 foo<acronym>bar</acronym>
 <abbr>fo</abbr>ob<u>a<b>r</b></u>
+</div>
 
 </body>
 ` )
 
 
 fib
+.qsa( 'body > div' )
 //.mode( 'retain' )
 .action({
   find:    /lo+l/gi,
@@ -70,5 +75,12 @@ fib
 .wrap( /foobar/gi, 'match' )
 
 console.log( fib.render())
+//console.log( fib.text )
 console.timeEnd( 'Fibrio' )
+
+console.time( 'Revert' )
+console.log( 'Phase: ', fib.phase.length )
+console.log( fib.revert( 2 ).render() )
+
+console.timeEnd( 'Revert' )
 

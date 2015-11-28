@@ -379,6 +379,7 @@ desc( 'Revert', () => {
       .action({})
       .replace( /\b(\w+)(ed|ing)\b/gi, '[$1[$2]]' )
     let cloned = Object.assign( Fibrio(), fib )
+    cloned.phase = Array.from( cloned.phase )
 
     htmlEq( cloned.ohtml, fib.ohtml )
     htmlEq( fib.html, 'i [laugh[ed]] out so loud: &#x2018;<u>(lol)</u> <u>(lo</u><x><u>oo</u></x><u>ooooool)</u> <u>(lo</u><y><u>ooo</u></y><u>oool)</u> [mean[ing]] <u>(lol)</u> [mean[ing]] <u>(loooool)</u>&#x2019;.' )

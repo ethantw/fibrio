@@ -1,11 +1,12 @@
 
 import escapeReg from './fn/escapeReg'
+import root      from './fn/root'
 import { prop }  from './fn/manipulate'
 import setAct    from './fn/setAct'
+import revertTo  from './fn/revertTo'
 
 // NPM modules:
-const $    = IMPORT( 'cheerio' )
-const root = html => $( `<fibrio-root>${html}</fibrio-root>` )
+const $ = IMPORT( 'cheerio' )
 
 class Finder {
   /**
@@ -50,16 +51,42 @@ class Finder {
   }
 
   get text() {
-    return this.aggregate()
+    if ( typeof this.root === 'undefined' ) {
+      return this.aggregate()
+    }
+
+    let i   = this.context.length
+    let ret = []
+
+    while ( i-- ) {
+      ret.unshift( this.aggregate( this.context[ i ] ))
+    }
+    return ret
   }
 
   get match() {
-    return this.grep()
+    if ( typeof this.root === 'undefined' ) {
+      return this.grep()
+    }
+
+    let i   = this.text.length
+    let ret = []
+
+    while ( i-- ) {
+      ret.unshift( this.grep( this.text[ i ] ))
+    }
+    return ret
   }
 
   get html() {
-    return this.context.html()
+    return ( this.root || this.context ).html()
       .replace( /<\/?fibrio\-text>/gi, '' )
+  }
+
+  qsa( selector ) {
+    this.root    = this.context
+    this.context = this.context.find( selector )
+    return this
   }
 
   /**
@@ -254,10 +281,34 @@ class Finder {
    * @return {Fibrio} The instance
    */
   process() {
-    if ( this.newActionProcessed === false ) {
-      this.newActionProcessed = true
-      this.processMatch()
+    if ( this.newActionProcessed === true )  return this
+
+    {
+      const cloned = typeof this.root !== 'undefined'
+        ? this.root.clone()
+        : null
+      let phase = {
+        html: this.html,
+        root: cloned,
+        context: cloned
+          ? cloned.find( this.context )
+          : null,
+      }
+      this.phase.push( phase )
     }
+
+    if ( typeof this.root === 'undefined' ) {
+      this.processMatch()
+    } else {
+      let i = this.context.length
+
+      while ( i-- ) {
+        const context = this.context.eq( i )
+        const match   = this.match[ i ]
+        this.processMatch({ context, match })
+      }
+    }
+    this.newActionProcessed = true
     return this
   }
 
@@ -279,12 +330,11 @@ class Finder {
     : Number.parseInt( level, 10 )
 
     if ( level === 1 ) {
-      this.context = root( this.phase.pop())
+      this::revertTo( this.phase.pop() )
       return this
     }
 
     let length  = this.phase.length
-    let lastIdx = length - 1
     let all = (
       level === 'all' ||
       level >= length ||
@@ -292,14 +342,13 @@ class Finder {
     ) ? true : false
 
     if ( all ) {
-      this.phase   = [ this.ohtml ]
-      this.context = root( this.ohtml )
+      this::revertTo( this.phase[0] )
+      this.phase = []
       return this
     }
 
-    this.context = root(
-      this.phase.splice( lastIdx-level, length )[0]
-    )
+    let which = this.phase.splice( length - level, length )[0]
+    this::revertTo( which )
     return this
   }
 }

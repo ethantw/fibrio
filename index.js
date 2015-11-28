@@ -66,11 +66,11 @@
 
 	var _core2 = _interopRequireDefault(_core);
 
-	var _elmt = __webpack_require__(5);
+	var _elmt = __webpack_require__(7);
 
 	var _elmt2 = _interopRequireDefault(_elmt);
 
-	__webpack_require__(6);
+	__webpack_require__(8);
 
 	var Fibrio = function Fibrio() {
 	  for (var _len = arguments.length, arg = Array(_len), _key = 0; _key < _len; _key++) {
@@ -116,17 +116,22 @@
 
 	var _fnEscapeReg2 = _interopRequireDefault(_fnEscapeReg);
 
-	var _fnManipulate = __webpack_require__(3);
+	var _fnRoot = __webpack_require__(3);
 
-	var _fnSetAct = __webpack_require__(4);
+	var _fnRoot2 = _interopRequireDefault(_fnRoot);
+
+	var _fnManipulate = __webpack_require__(4);
+
+	var _fnSetAct = __webpack_require__(5);
 
 	var _fnSetAct2 = _interopRequireDefault(_fnSetAct);
 
+	var _fnRevertTo = __webpack_require__(6);
+
+	var _fnRevertTo2 = _interopRequireDefault(_fnRevertTo);
+
 	// NPM modules:
 	var $ = require('cheerio');
-	var root = function root(html) {
-	  return $('<fibrio-root>' + html + '</fibrio-root>');
-	};
 
 	var Finder = (function () {
 	  /**
@@ -144,7 +149,7 @@
 	    _classCallCheck(this, Finder);
 
 	    this.ohtml = html;
-	    this.context = root(html);
+	    this.context = (0, _fnRoot2['default'])(html);
 	    this.phase = [];
 
 	    if (noPreset === true) {
@@ -164,7 +169,12 @@
 	   */
 
 	  _createClass(Finder, [{
-	    key: 'mode',
+	    key: 'qsa',
+	    value: function qsa(selector) {
+	      this.root = this.context;
+	      this.context = this.context.find(selector);
+	      return this;
+	    }
 
 	    /**
 	     * Indicates whether to re-use the existing portions
@@ -175,6 +185,8 @@
 	     * @param {String} [mode='retain']
 	     *   Either 'retain' or 'first'
 	     */
+	  }, {
+	    key: 'mode',
 	    value: function mode(_mode) {
 	      this.portionMode = /^first$/i.test(_mode) ? 'first' : 'retain';
 	      return this;
@@ -392,10 +404,30 @@
 	  }, {
 	    key: 'process',
 	    value: function process() {
-	      if (this.newActionProcessed === false) {
-	        this.newActionProcessed = true;
-	        this.processMatch();
+	      if (this.newActionProcessed === true) return this;
+
+	      {
+	        var cloned = typeof this.root !== 'undefined' ? this.root.clone() : null;
+	        var phase = {
+	          html: this.html,
+	          root: cloned,
+	          context: cloned ? cloned.find(this.context) : null
+	        };
+	        this.phase.push(phase);
 	      }
+
+	      if (typeof this.root === 'undefined') {
+	        this.processMatch();
+	      } else {
+	        var i = this.context.length;
+
+	        while (i--) {
+	          var context = this.context.eq(i);
+	          var match = this.match[i];
+	          this.processMatch({ context: context, match: match });
+	        }
+	      }
+	      this.newActionProcessed = true;
 	      return this;
 	    }
 
@@ -420,37 +452,57 @@
 	      level = typeof level === 'string' && level === 'all' ? 'all' : Number.parseInt(level, 10);
 
 	      if (level === 1) {
-	        this.context = root(this.phase.pop());
+	        _fnRevertTo2['default'].call(this, this.phase.pop());
 	        return this;
 	      }
 
 	      var length = this.phase.length;
-	      var lastIdx = length - 1;
 	      var all = level === 'all' || level >= length || Number.isNaN(level) ? true : false;
 
 	      if (all) {
-	        this.phase = [this.ohtml];
-	        this.context = root(this.ohtml);
+	        _fnRevertTo2['default'].call(this, this.phase[0]);
+	        this.phase = [];
 	        return this;
 	      }
 
-	      this.context = root(this.phase.splice(lastIdx - level, length)[0]);
+	      var which = this.phase.splice(length - level, length)[0];
+	      _fnRevertTo2['default'].call(this, which);
 	      return this;
 	    }
 	  }, {
 	    key: 'text',
 	    get: function get() {
-	      return this.aggregate();
+	      if (typeof this.root === 'undefined') {
+	        return this.aggregate();
+	      }
+
+	      var i = this.context.length;
+	      var ret = [];
+
+	      while (i--) {
+	        ret.unshift(this.aggregate(this.context[i]));
+	      }
+	      return ret;
 	    }
 	  }, {
 	    key: 'match',
 	    get: function get() {
-	      return this.grep();
+	      if (typeof this.root === 'undefined') {
+	        return this.grep();
+	      }
+
+	      var i = this.text.length;
+	      var ret = [];
+
+	      while (i--) {
+	        ret.unshift(this.grep(this.text[i]));
+	      }
+	      return ret;
 	    }
 	  }, {
 	    key: 'html',
 	    get: function get() {
-	      return this.context.html().replace(/<\/?fibrio\-text>/gi, '');
+	      return (this.root || this.context).html().replace(/<\/?fibrio\-text>/gi, '');
 	    }
 	  }], [{
 	    key: 'matches',
@@ -483,9 +535,8 @@
 	  value: true
 	});
 
-	var escapee = /([\.\*\+\?\^\=\!\:\$\{\}\(\)\|\[\]\/\\])/g;
 	var escapeReg = function escapeReg(str) {
-	  return new String(str).replace(escapee, '\\$1');
+	  return new String(str).replace(/([\.\*\+\?\^\=\!\:\$\{\}\(\)\|\[\]\/\\])/g, '\\$1');
 	};
 
 	exports['default'] = escapeReg;
@@ -493,6 +544,24 @@
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var $ = require('cheerio');
+	var root = function root(html) {
+	  return $('<fibrio-root>' + html + '</fibrio-root>');
+	};
+
+	exports['default'] = root;
+	module.exports = exports['default'];
+
+/***/ },
+/* 4 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -642,7 +711,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	
@@ -685,7 +754,37 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 5 */
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = revertTo;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _root = __webpack_require__(3);
+
+	var _root2 = _interopRequireDefault(_root);
+
+	var $ = require('cheerio');
+
+	function revertTo(phase) {
+	  if (!phase.context) {
+	    this.context = (0, _root2['default'])(phase.html);
+	    return;
+	  }
+	  this.root = phase.root;
+	  this.context = phase.context;
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -729,23 +828,23 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	__webpack_require__(5);
-
 	__webpack_require__(7);
-
-	__webpack_require__(8);
 
 	__webpack_require__(9);
 
 	__webpack_require__(10);
 
+	__webpack_require__(11);
+
+	__webpack_require__(12);
+
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -766,7 +865,7 @@
 	});
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -777,7 +876,7 @@
 
 	var _core2 = _interopRequireDefault(_core);
 
-	var _fnManipulate = __webpack_require__(3);
+	var _fnManipulate = __webpack_require__(4);
 
 	Object.assign(_core2['default'].fn, {
 	  /**
@@ -831,7 +930,7 @@
 	});
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -871,7 +970,9 @@
 	   *   The matches within the instance’s context node
 	   */
 	  grep: function grep() {
-	    var aggr = this.text;
+	    var aggr = arguments.length <= 0 || arguments[0] === undefined ? this.text : arguments[0];
+
+	    //const aggr    = this.text
 	    var prepMat = this.prepMat;
 	    var regex = typeof this.pattern === 'string' ? new RegExp((0, _fnEscapeReg2['default'])(this.pattern), 'g') : this.pattern;
 
@@ -925,7 +1026,7 @@
 	});
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -936,7 +1037,7 @@
 
 	var _core2 = _interopRequireDefault(_core);
 
-	var _fnManipulate = __webpack_require__(3);
+	var _fnManipulate = __webpack_require__(4);
 
 	var $ = require('cheerio');
 
@@ -948,8 +1049,13 @@
 	   * @return {Fibrio} The instance
 	   */
 	  processMatch: function processMatch() {
-	    var match = this.match;
-	    var context = this.context;
+	    var item = arguments.length <= 0 || arguments[0] === undefined ? {
+	      match: this.match,
+	      context: this.context
+	    } : arguments[0];
+
+	    var match = item.match;
+	    var context = item.context;
 
 	    if (match.length === 0) return this;
 
@@ -963,8 +1069,6 @@
 	    var portionIdx = 0;
 	    var nodeStack = [context];
 	    var doAvoidNode = undefined;
-
-	    this.phase.push(this.html);
 
 	    out: while (true) {
 	      var _context;
@@ -1024,7 +1128,7 @@
 	        // node.
 	        atIdx -= endPortion.node.data.length - endPortion.endIdxInNode;
 
-	        current = this.replaceMat(mat, startPortion, innerPortion, endPortion);
+	        current = this.replaceMat(context, mat, startPortion, innerPortion, endPortion);
 
 	        startPortion = null;
 	        endPortion = null;
@@ -1109,10 +1213,9 @@
 	   *
 	   * @return {CheerioDOMObject}
 	   */
-	  replaceMat: function replaceMat(mat, startPortion, innerPortion, endPortion) {
+	  replaceMat: function replaceMat(context, mat, startPortion, innerPortion, endPortion) {
 	    var _this = this;
 
-	    var context = this.context;
 	    var matStartNode = startPortion.node;
 	    var matEndNode = endPortion.node;
 

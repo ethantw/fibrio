@@ -24,8 +24,8 @@ Object.assign( Finder.fn, {
    * @return {Array}
    *   The matches within the instance’s context node
    */
-  grep() {
-    const aggr    = this.text
+  grep( aggr=this.text ) {
+    //const aggr    = this.text
     const prepMat = this.prepMat
     const regex   = typeof this.pattern === 'string'
     ? new RegExp(escapeReg( this.pattern ), 'g' )
