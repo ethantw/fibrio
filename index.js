@@ -762,7 +762,6 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	exports['default'] = revertTo;
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -770,16 +769,14 @@
 
 	var _root2 = _interopRequireDefault(_root);
 
-	var $ = require('cheerio');
-
-	function revertTo(phase) {
+	exports['default'] = function (phase) {
 	  if (!phase.context) {
 	    this.context = (0, _root2['default'])(phase.html);
 	    return;
 	  }
 	  this.root = phase.root;
 	  this.context = phase.context;
-	}
+	};
 
 	module.exports = exports['default'];
 

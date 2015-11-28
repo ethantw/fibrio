@@ -1,9 +1,7 @@
 
 import root from './root'
 
-const $ = IMPORT( 'cheerio' )
-
-export default function revertTo( phase ) {
+export default function( phase ) {
   if ( !phase.context ) {
     this.context = root( phase.html )
     return
