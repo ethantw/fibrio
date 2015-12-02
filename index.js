@@ -171,7 +171,9 @@
 	  _createClass(Finder, [{
 	    key: 'qsa',
 	    value: function qsa(selector) {
-	      this.root = this.context;
+	      if (!this.root) {
+	        this.root = this.context;
+	      }
 	      this.context = this.context.find(selector);
 	      return this;
 	    }
