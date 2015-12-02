@@ -1,5 +1,5 @@
 
-import Finder from './core'
+import Finder    from './core'
 import escapeReg from './fn/escapeReg'
 
 Object.assign( Finder.fn, {

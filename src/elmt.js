@@ -1,7 +1,7 @@
 
 import Finder from './core'
 
-const NON_TEXT = new Set([
+const NON_TEXT = [
   // Outside `<body>`
   'head', 'title',
   // Line-breaks and rules
@@ -10,9 +10,9 @@ const NON_TEXT = new Set([
   'script', 'style', 'img', 'video', 'audio', 'canvas', 'svg', 'map', 'object',
   // Input elmtents
   'input', 'textarea', 'select', 'option', 'optgroup', 'button',
-])
+]
 
-const BDRY = new Set([
+const BDRY = [
   // Block elmtents
   'address', 'article', 'aside', 'blockquote', 'dd', 'div',
   'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3',
@@ -26,7 +26,7 @@ const BDRY = new Set([
   'input', 'textarea', 'select', 'option', 'optgroup', 'button',
   // Table related elmtents
   'table', 'tbody', 'thead', 'th', 'tr', 'td', 'caption', 'col', 'tfoot', 'colgroup',
-])
+]
 
 const ELMT = { NON_TEXT, BDRY }
 

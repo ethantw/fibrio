@@ -66,11 +66,15 @@
 
 	var _core2 = _interopRequireDefault(_core);
 
-	var _elmt = __webpack_require__(7);
-
-	var _elmt2 = _interopRequireDefault(_elmt);
+	__webpack_require__(7);
 
 	__webpack_require__(8);
+
+	__webpack_require__(9);
+
+	__webpack_require__(10);
+
+	__webpack_require__(11);
 
 	var Fibrio = function Fibrio() {
 	  for (var _len = arguments.length, arg = Array(_len), _key = 0; _key < _len; _key++) {
@@ -81,7 +85,7 @@
 	};
 
 	Object.assign(Fibrio, {
-	  ELMT: _elmt2['default'],
+	  ELMT: _core2['default'].ELMT,
 	  finder: _core2['default'],
 	  fn: _core2['default'].prototype,
 	  matches: _core2['default'].matches
@@ -748,7 +752,7 @@
 	    selector = selector.replace(/\,\s*/, ',').split(',');
 	  }
 	  if (Array.isArray(selector)) {
-	    selector.map(function (s) {
+	    selector.forEach(function (s) {
 	      return _this[action](s);
 	    });
 	  }
@@ -800,7 +804,7 @@
 
 	var _core2 = _interopRequireDefault(_core);
 
-	var NON_TEXT = new Set([
+	var NON_TEXT = [
 	// Outside `<body>`
 	'head', 'title',
 	// Line-breaks and rules
@@ -808,9 +812,9 @@
 	// Media and Source elmtents
 	'script', 'style', 'img', 'video', 'audio', 'canvas', 'svg', 'map', 'object',
 	// Input elmtents
-	'input', 'textarea', 'select', 'option', 'optgroup', 'button']);
+	'input', 'textarea', 'select', 'option', 'optgroup', 'button'];
 
-	var BDRY = new Set([
+	var BDRY = [
 	// Block elmtents
 	'address', 'article', 'aside', 'blockquote', 'dd', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'hr', 'main', 'nav', 'noscript', 'ol', 'output', 'p', 'pre', 'section', 'ul',
 	// Other misc. elmtents that are not part of continuous inline prose
@@ -820,7 +824,7 @@
 	// Input elmtents
 	'input', 'textarea', 'select', 'option', 'optgroup', 'button',
 	// Table related elmtents
-	'table', 'tbody', 'thead', 'th', 'tr', 'td', 'caption', 'col', 'tfoot', 'colgroup']);
+	'table', 'tbody', 'thead', 'th', 'tr', 'td', 'caption', 'col', 'tfoot', 'colgroup'];
 
 	var ELMT = { NON_TEXT: NON_TEXT, BDRY: BDRY };
 
@@ -830,22 +834,6 @@
 
 /***/ },
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	__webpack_require__(7);
-
-	__webpack_require__(9);
-
-	__webpack_require__(10);
-
-	__webpack_require__(11);
-
-	__webpack_require__(12);
-
-/***/ },
-/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -866,7 +854,7 @@
 	});
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -931,7 +919,7 @@
 	});
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1027,7 +1015,7 @@
 	});
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

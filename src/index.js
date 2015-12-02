@@ -1,12 +1,15 @@
 
 import Finder from './core'
-import ELMT   from './elmt'
-import './init'
+import './elmt'
+import './prop'
+import './aggregate'
+import './grep'
+import './process'
 
 let Fibrio = ( ...arg ) => new Finder( ...arg )
 
 Object.assign( Fibrio, {
-  ELMT,
+  ELMT:    Finder.ELMT,
   finder:  Finder,
   fn:      Finder.prototype,
   matches: Finder.matches,

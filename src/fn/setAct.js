@@ -22,7 +22,7 @@ export default function( action, selector ) {
       .split( ',' )
   }
   if ( Array.isArray( selector )) {
-    selector.map( s => this[ action ]( s ))
+    selector.forEach( s => this[ action ]( s ))
   }
   return this
 }
