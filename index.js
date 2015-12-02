@@ -524,6 +524,8 @@
 	Finder.version = '0.1.0';
 	Finder.fn = Finder.prototype;
 
+	Finder.fn.filter = Finder.fn.query = Finder.fn.$ = Finder.fn.qsa;
+
 	exports['default'] = Finder;
 	module.exports = exports['default'];
 

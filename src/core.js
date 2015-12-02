@@ -358,5 +358,7 @@ class Finder {
 Finder.version = '@VERSION'
 Finder.fn      = Finder.prototype
 
+Finder.fn.filter = Finder.fn.query = Finder.fn.$ = Finder.fn.qsa
+
 export default Finder
 

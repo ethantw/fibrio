@@ -101,7 +101,7 @@ desc( 'Basics', () => {
     `
     let fib  = Fibrio( html )
       .qsa( 'root > content' )
-      .qsa( 'p' )
+      .filter( 'p' )
       .action({
         find:    /hello/gi,
         wrap:    'u',
