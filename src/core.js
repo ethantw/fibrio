@@ -228,13 +228,28 @@ class Finder {
    */
   action( action ) {
     if ( typeof action !== 'object' )  return this
-    if ( action.mode )    this.mode( action.mode )
-    if ( action.find )    this.find( action.find )
+    if ( action.mode )  this.mode( action.mode )
+    if ( action.find )  this.find( action.find )
 
     this.wrapper     = action.wrap    || null
     this.replacement = action.replace || null
     this.newActionProcessed = false
     return this
+  }
+
+  /**
+   * Set up the text pattern for the finder to process.
+   *
+   * @param {String|RegExp}
+   * @param {Boolean} [returnMatch=false]
+   * @return {Fibrio|Array}
+   *   The instance or the matches (array) depends on
+   *   the second @param, `returnMatch`
+   */
+  find( regex, returnMatch=false ) {
+    this.pattern = regex
+    const ret = this.grep()
+    return returnMatch === true ? ret : this
   }
 
   /**
@@ -289,14 +304,13 @@ class Finder {
       const cloned = typeof this.root !== 'undefined'
         ? this.root.clone()
         : null
-      let phase = {
-        html: this.html,
-        root: cloned,
+      this.phase.push({
+        html:    this.html,
+        root:    cloned,
         context: cloned
           ? cloned.find( this.context )
           : null,
-      }
-      this.phase.push( phase )
+      })
     }
 
     if ( typeof this.root === 'undefined' ) {
@@ -337,20 +351,19 @@ class Finder {
     }
 
     let length  = this.phase.length
-    let all = (
+
+    // If we’re to revert back to the original state
+    if (
       level === 'all' ||
       level >= length ||
       Number.isNaN( level )
-    ) ? true : false
-
-    if ( all ) {
+    ) {
       this::revertTo( this.phase[0] )
       this.phase = []
       return this
     }
 
-    let which = this.phase.splice( length - level, length )[0]
-    this::revertTo( which )
+    this::revertTo( this.phase.splice( length - level, length )[0] )
     return this
   }
 }

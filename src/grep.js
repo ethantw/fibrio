@@ -4,28 +4,12 @@ import escapeReg from './fn/escapeReg'
 
 Object.assign( Finder.fn, {
   /**
-   * Set up the text pattern for the finder to process.
-   *
-   * @param {String|RegExp}
-   * @param {Boolean} [returnMatch=false]
-   * @return {Fibrio|Array}
-   *   The instance or the matches (array) depends on
-   *   the second @param, `returnMatch`
-   */
-  find( regex, returnMatch=false ) {
-    this.pattern = regex
-    const ret = this.grep()
-    return returnMatch === true ? ret : this
-  },
-
-  /**
    * Gre(p) the matches with the text aggregation.
    *
    * @return {Array}
    *   The matches within the instance’s context node
    */
   grep( aggr=this.text ) {
-    //const aggr    = this.text
     const prepMat = this.prepMat
     const regex   = typeof this.pattern === 'string'
     ? new RegExp(escapeReg( this.pattern ), 'g' )

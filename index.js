@@ -351,6 +351,25 @@
 	    }
 
 	    /**
+	     * Set up the text pattern for the finder to process.
+	     *
+	     * @param {String|RegExp}
+	     * @param {Boolean} [returnMatch=false]
+	     * @return {Fibrio|Array}
+	     *   The instance or the matches (array) depends on
+	     *   the second @param, `returnMatch`
+	     */
+	  }, {
+	    key: 'find',
+	    value: function find(regex) {
+	      var returnMatch = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+
+	      this.pattern = regex;
+	      var ret = this.grep();
+	      return returnMatch === true ? ret : this;
+	    }
+
+	    /**
 	     * Replace the matched text with configured
 	     * replacements.
 	     *
@@ -414,12 +433,11 @@
 
 	      {
 	        var cloned = typeof this.root !== 'undefined' ? this.root.clone() : null;
-	        var phase = {
+	        this.phase.push({
 	          html: this.html,
 	          root: cloned,
 	          context: cloned ? cloned.find(this.context) : null
-	        };
-	        this.phase.push(phase);
+	        });
 	      }
 
 	      if (typeof this.root === 'undefined') {
@@ -463,16 +481,15 @@
 	      }
 
 	      var length = this.phase.length;
-	      var all = level === 'all' || level >= length || Number.isNaN(level) ? true : false;
 
-	      if (all) {
+	      // If we’re to revert back to the original state
+	      if (level === 'all' || level >= length || Number.isNaN(level)) {
 	        _fnRevertTo2['default'].call(this, this.phase[0]);
 	        this.phase = [];
 	        return this;
 	      }
 
-	      var which = this.phase.splice(length - level, length)[0];
-	      _fnRevertTo2['default'].call(this, which);
+	      _fnRevertTo2['default'].call(this, this.phase.splice(length - level, length)[0]);
 	      return this;
 	    }
 	  }, {
@@ -936,23 +953,6 @@
 
 	Object.assign(_core2['default'].fn, {
 	  /**
-	   * Set up the text pattern for the finder to process.
-	   *
-	   * @param {String|RegExp}
-	   * @param {Boolean} [returnMatch=false]
-	   * @return {Fibrio|Array}
-	   *   The instance or the matches (array) depends on
-	   *   the second @param, `returnMatch`
-	   */
-	  find: function find(regex) {
-	    var returnMatch = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
-	    this.pattern = regex;
-	    var ret = this.grep();
-	    return returnMatch === true ? ret : this;
-	  },
-
-	  /**
 	   * Gre(p) the matches with the text aggregation.
 	   *
 	   * @return {Array}
@@ -961,7 +961,6 @@
 	  grep: function grep() {
 	    var aggr = arguments.length <= 0 || arguments[0] === undefined ? this.text : arguments[0];
 
-	    //const aggr    = this.text
 	    var prepMat = this.prepMat;
 	    var regex = typeof this.pattern === 'string' ? new RegExp((0, _fnEscapeReg2['default'])(this.pattern), 'g') : this.pattern;
 

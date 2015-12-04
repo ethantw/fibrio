@@ -20,7 +20,7 @@ Object.assign( Finder.fn, {
     if ( this.filterFn && !this.filterFn( node ))  return []
 
     let ret = [ '' ]
-    let i    = 0
+    let i   = 0
 
     if ( node = node::first()) do {
       if ( node::type() === 'text' ) {
