@@ -1,6 +1,5 @@
 
-Fibrio
-======
+# Fibrio [![Build Status](https://travis-ci.org/ethantw/fibrio.svg?branch=master)](https://travis-ci.org/ethantw/fibrio)
 
 - [Intro & Demo](#intro)
 - [API](#api)
@@ -89,5 +88,13 @@ The **`action`** object includes:
 - **mode** *optional* (`String`, either `'retain'` or `'first'`) Indicates
 
 ❗️**Notice that** the `.action()` method only sets up the intance’s grepping pattern, replacement, wrapper and/or portion mode that are yet to be processed. You will have to use the `.process()` or `.render()` method to process the previously set action(s) and get the result.
+
+### .process()
+```js
+fib.process()
+```
+
+The `process()` method 
+
 
 
