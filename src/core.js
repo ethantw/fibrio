@@ -33,19 +33,19 @@ class Finder {
    * selectors.
    *
    * @param {Cheerio|CheerioDOMObject|HTMLString}
-   *   The node to be checked with.
+   *   The element to be checked with.
    * @param {String}
-   *   The Selectors to be matched.
+   *   The CSS Selector(s) to test.
    */
-  static matches( node, selector ) {
-    node = $( node )
+  static matches( elmt, selector ) {
+    elmt = $( elmt )
 
     if (
-      typeof node === 'object' &&
-      node.is &&
-      typeof node.is === 'function'
+      typeof elmt === 'object' &&
+      elmt.is &&
+      typeof elmt.is === 'function'
     ) {
-      return node.is( selector )
+      return elmt.is( selector )
     }
     return false
   }
