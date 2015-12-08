@@ -183,7 +183,7 @@ Object.assign( Finder.fn, {
     let matStartNode = startPortion.node
     let matEndNode   = endPortion.node
 
-    let preceeding = ''
+    let preceding  = ''
     let following  = ''
     let label      = [
       `{{fibrio-replacement: ${Date.now()}}}`,
@@ -202,7 +202,7 @@ Object.assign( Finder.fn, {
 
       // Grab the text before the match
       if ( startPortion.idxInNode > 0 ) {
-        preceeding = data.substring( 0, startPortion.idxInNode )
+        preceding = data.substring( 0, startPortion.idxInNode )
       }
 
       // Get the replacement
@@ -220,12 +220,12 @@ Object.assign( Finder.fn, {
       matElmt.html(
         matElmt.html().replace(
           label[0],
-          preceeding + replacement + following
+          preceding + replacement + following
         )
       )
 
       // Return the new node
-      return matElmt.contents()[ preceeding ? idx+1 : idx ]
+      return matElmt.contents()[ preceding ? idx+1 : idx ]
     } else {
       // matStartNode -> matInnerNode -> matEndNode
 
@@ -236,7 +236,7 @@ Object.assign( Finder.fn, {
       if ( !matStartElmt[0] )  matStartElmt = context
       if ( !matEndElmt[0] )    matEndElmt   = context
 
-      preceeding = matStartNode.data.substring( 0, startPortion.idxInNode )
+      preceding = matStartNode.data.substring( 0, startPortion.idxInNode )
       following  = matEndNode.data.substring( endPortion.endIdxInNode )
 
       let first = this.getPortionReplacementElmt(
@@ -259,7 +259,7 @@ Object.assign( Finder.fn, {
 
       matStartElmt.html(
         matStartElmt.html()
-        .replace( label[0], preceeding + first )
+        .replace( label[0], preceding + first )
         .replace( label[1], () => {
           areNotEqual = false
           return last + following
