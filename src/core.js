@@ -248,8 +248,7 @@ class Finder {
    */
   find( regex, returnMatch=false ) {
     this.pattern = regex
-    const ret = this.grep()
-    return returnMatch === true ? ret : this
+    return returnMatch === true ? this.match : this
   }
 
   /**
