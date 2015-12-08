@@ -92,13 +92,13 @@ class Finder {
   }
 
   /**
-   * Indicates whether to re-use the existing portions
+   * Indicate whether to re-use the existing portions
    * while replacing a match with text or to place the
    * the entire replacement in the first found match
    * portion’s node.
    *
    * @param {String} [mode='retain']
-   *   Either 'retain' or 'first'
+   *   Either 'retain' or 'first'.
    */
   mode( mode ) {
     this.portionMode = /^first$/i.test( mode )
@@ -339,6 +339,17 @@ class Finder {
     return this.html
   }
 
+  /**
+   * Revert to a certain text-processing phase of
+   * the instance.
+   *
+   * @param {Number|String} [level=1]
+   *   The level — a number or a string of `all` —
+   *   to be reverted.
+   * @return {Fibrio}
+   *   The instance.
+   *
+   */
   revert( level=1 ) {
     level = typeof level === 'string' && level === 'all'
     ? 'all'

@@ -167,9 +167,9 @@
 	   * selectors.
 	   *
 	   * @param {Cheerio|CheerioDOMObject|HTMLString}
-	   *   The node to be checked with.
+	   *   The element to be checked with.
 	   * @param {String}
-	   *   The Selectors to be matched.
+	   *   The CSS Selector(s) to test.
 	   */
 
 	  _createClass(Finder, [{
@@ -183,13 +183,13 @@
 	    }
 
 	    /**
-	     * Indicates whether to re-use the existing portions
+	     * Indicate whether to re-use the existing portions
 	     * while replacing a match with text or to place the
 	     * the entire replacement in the first found match
 	     * portion’s node.
 	     *
 	     * @param {String} [mode='retain']
-	     *   Either 'retain' or 'first'
+	     *   Either 'retain' or 'first'.
 	     */
 	  }, {
 	    key: 'mode',
@@ -365,8 +365,7 @@
 	      var returnMatch = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
 	      this.pattern = regex;
-	      var ret = this.grep();
-	      return returnMatch === true ? ret : this;
+	      return returnMatch === true ? this.match : this;
 	    }
 
 	    /**
@@ -468,6 +467,18 @@
 	      this.process();
 	      return this.html;
 	    }
+
+	    /**
+	     * Revert to a certain text-processing phase of
+	     * the instance.
+	     *
+	     * @param {Number|String} [level=1]
+	     *   The level — a number or a string of `all` —
+	     *   to be reverted.
+	     * @return {Fibrio}
+	     *   The instance.
+	     *
+	     */
 	  }, {
 	    key: 'revert',
 	    value: function revert() {
@@ -529,11 +540,11 @@
 	    }
 	  }], [{
 	    key: 'matches',
-	    value: function matches(node, selector) {
-	      node = $(node);
+	    value: function matches(elmt, selector) {
+	      elmt = $(elmt);
 
-	      if (typeof node === 'object' && node.is && typeof node.is === 'function') {
-	        return node.is(selector);
+	      if (typeof elmt === 'object' && elmt.is && typeof elmt.is === 'function') {
+	        return elmt.is(selector);
 	      }
 	      return false;
 	    }
@@ -1207,7 +1218,7 @@
 	    var matStartNode = startPortion.node;
 	    var matEndNode = endPortion.node;
 
-	    var preceeding = '';
+	    var preceding = '';
 	    var following = '';
 	    var label = ['{{fibrio-replacement: ' + Date.now() + '}}', '{{fibrio-replacement: ' + Date.now() + '}}[[end]]'];
 
@@ -1225,7 +1236,7 @@
 
 	      // Grab the text before the match
 	      if (startPortion.idxInNode > 0) {
-	        preceeding = data.substring(0, startPortion.idxInNode);
+	        preceding = data.substring(0, startPortion.idxInNode);
 	      }
 
 	      // Get the replacement
@@ -1238,10 +1249,10 @@
 
 	      matNode.data = label[0];
 
-	      matElmt.html(matElmt.html().replace(label[0], preceeding + replacement + following));
+	      matElmt.html(matElmt.html().replace(label[0], preceding + replacement + following));
 
 	      // Return the new node
-	      return matElmt.contents()[preceeding ? idx + 1 : idx];
+	      return matElmt.contents()[preceding ? idx + 1 : idx];
 	    } else {
 	      var _context8;
 
@@ -1257,7 +1268,7 @@
 	        if (!matStartElmt[0]) matStartElmt = context;
 	        if (!matEndElmt[0]) matEndElmt = context;
 
-	        preceeding = matStartNode.data.substring(0, startPortion.idxInNode);
+	        preceding = matStartNode.data.substring(0, startPortion.idxInNode);
 	        following = matEndNode.data.substring(endPortion.endIdxInNode);
 
 	        var first = (_context8 = _this.getPortionReplacementElmt(startPortion, mat), _fnManipulate.html).call(_context8);
@@ -1272,7 +1283,7 @@
 	        matStartNode.data = label[0];
 	        matEndNode.data = label[1];
 
-	        matStartElmt.html(matStartElmt.html().replace(label[0], preceeding + first).replace(label[1], function () {
+	        matStartElmt.html(matStartElmt.html().replace(label[0], preceding + first).replace(label[1], function () {
 	          areNotEqual = false;
 	          return last + following;
 	        }));
