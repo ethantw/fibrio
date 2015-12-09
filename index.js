@@ -780,11 +780,11 @@
 	  action = action.toLowerCase();
 
 	  if (typeof selector === 'string') {
-	    selector = split(normalize(selector));
+	    selector = split(selector);
 	  }
 	  if (selector && Array.isArray(selector)) {
 	    selector.forEach(function (sel) {
-	      return _this[action](sel);
+	      return _this[action](normalize(sel));
 	    });
 	  }
 	  return this;
