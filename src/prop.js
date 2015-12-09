@@ -5,8 +5,7 @@ Object.assign( Finder.fn, {
   version:     '@VERSION',
   portionMode: 'retain',
   context:     undefined,
-
-  avoid:       new Set( Finder.ELMT.NON_TEXT ),
-  bdry:        new Set( Finder.ELMT.BDRY ),
+  avoid:       new Set( Finder.preset.HTML5.NON_TEXT ),
+  bdry:        new Set( Finder.preset.HTML5.BDRY ),
 })
 

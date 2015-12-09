@@ -1,35 +1,43 @@
 
 import Finder from './core'
 
+// HTML5 elements categorised by function:
+// http://www.w3.org/TR/html-markup/elements-by-function.html
+
 const NON_TEXT = [
-  // Outside `<body>`
+  // Outside `<body>`:
   'head', 'title',
-  // Line-breaks and rules
+  // Line-breaks and rules:
   'br', 'hr',
-  // Media and Source elmtents
+  // Embeded content (media) and scripting:
   'script', 'style', 'img', 'video', 'audio', 'canvas', 'svg', 'map', 'object',
-  // Input elmtents
+  // Forms:
   'input', 'textarea', 'select', 'option', 'optgroup', 'button',
 ]
 
 const BDRY = [
-  // Block elmtents
+  // Grouping content and sections:
+  'body',
   'address', 'article', 'aside', 'blockquote', 'dd', 'div',
   'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3',
   'h4', 'h5', 'h6', 'header', 'hgroup', 'hr', 'main', 'nav', 'noscript', 'ol',
   'output', 'p', 'pre', 'section', 'ul',
-  // Other misc. elmtents that are not part of continuous inline prose
+  // Other misc. elements:
   'br', 'li', 'summary', 'dt', 'details', 'rp', 'rt', 'rtc',
-  // Media and Source elmtents
+  // Embeded content (media) and scripting:
   'script', 'style', 'img', 'video', 'audio', 'canvas', 'svg', 'map', 'object',
-  // Input elmtents
+  // Forms:
   'input', 'textarea', 'select', 'option', 'optgroup', 'button',
-  // Table related elmtents
+  // Tables:
   'table', 'tbody', 'thead', 'th', 'tr', 'td', 'caption', 'col', 'tfoot', 'colgroup',
 ]
 
-const ELMT = { NON_TEXT, BDRY }
+let preset = { HTML5: {
+  NON_TEXT,
+  BDRY,
+}}
 
-Object.assign( Finder, { ELMT })
-export default ELMT
+Object.assign( Finder, { preset })
+
+export default preset
 

@@ -85,7 +85,7 @@
 	};
 
 	Object.assign(Fibrio, {
-	  ELMT: _core2['default'].ELMT,
+	  preset: _core2['default'].preset,
 	  finder: _core2['default'],
 	  fn: _core2['default'].prototype,
 	  matches: _core2['default'].matches
@@ -166,7 +166,7 @@
 	   * Check if a node matches with the configured
 	   * selectors.
 	   *
-	   * @param {Cheerio|CheerioDOMObject|HTMLString}
+	   * @param {CheerioDOMObject|HTMLString}
 	   *   The element to be checked with.
 	   * @param {String}
 	   *   The CSS Selector(s) to test.
@@ -203,7 +203,7 @@
 	     * encountered by the finder. Once the function returns
 	     * false, the element will be avoided.
 	     *
-	     * @param {Cheerio|CheerioDOMObject}
+	     * @param {CheerioDOMObject}
 	     */
 	  }, {
 	    key: 'filterFn',
@@ -223,7 +223,7 @@
 	     * true, the finder will start a new text aggregation
 	     * context; otherwise the previous text continues.
 	     *
-	     * @param {Cheerio|CheerioDOMObject}
+	     * @param {CheerioDOMObject}
 	     */
 	  }, {
 	    key: 'bdryFn',
@@ -251,7 +251,7 @@
 	      var _context;
 
 	      if (!this.hasOwnProperty('avoid')) {
-	        this.avoid = new Set(Finder.ELMT.NON_TEXT);
+	        this.avoid = new Set(Finder.preset.HTML5.NON_TEXT);
 	      }
 
 	      (_context = this.avoid, _fnSetAct2['default']).call(_context, 'add', selector);
@@ -272,7 +272,7 @@
 	      var _context2;
 
 	      if (!this.hasOwnProperty('avoid')) {
-	        this.avoid = new Set(Finder.ELMT.NON_TEXT);
+	        this.avoid = new Set(Finder.preset.HTML5.NON_TEXT);
 	      }
 
 	      if (typeof selector === 'undefined') {
@@ -297,7 +297,7 @@
 	      var _context3;
 
 	      if (!this.hasOwnProperty('bdry')) {
-	        this.bdry = new Set(Finder.ELMT.BDRY);
+	        this.bdry = new Set(Finder.preset.HTML5.BDRY);
 	      }
 
 	      (_context3 = this.bdry, _fnSetAct2['default']).call(_context3, 'add', selector);
@@ -318,7 +318,7 @@
 	      var _context4;
 
 	      if (!this.hasOwnProperty('bdry')) {
-	        this.bdry = new Set(Finder.ELMT.BDRY);
+	        this.bdry = new Set(Finder.preset.HTML5.BDRY);
 	      }
 
 	      if (typeof selector === 'undefined') {
@@ -835,32 +835,39 @@
 
 	var _core2 = _interopRequireDefault(_core);
 
+	// HTML5 elements categorised by function:
+	// http://www.w3.org/TR/html-markup/elements-by-function.html
+
 	var NON_TEXT = [
-	// Outside `<body>`
+	// Outside `<body>`:
 	'head', 'title',
-	// Line-breaks and rules
+	// Line-breaks and rules:
 	'br', 'hr',
-	// Media and Source elmtents
+	// Embeded content (media) and scripting:
 	'script', 'style', 'img', 'video', 'audio', 'canvas', 'svg', 'map', 'object',
-	// Input elmtents
+	// Forms:
 	'input', 'textarea', 'select', 'option', 'optgroup', 'button'];
 
 	var BDRY = [
-	// Block elmtents
-	'address', 'article', 'aside', 'blockquote', 'dd', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'hr', 'main', 'nav', 'noscript', 'ol', 'output', 'p', 'pre', 'section', 'ul',
-	// Other misc. elmtents that are not part of continuous inline prose
+	// Grouping content and sections:
+	'body', 'address', 'article', 'aside', 'blockquote', 'dd', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'hr', 'main', 'nav', 'noscript', 'ol', 'output', 'p', 'pre', 'section', 'ul',
+	// Other misc. elements:
 	'br', 'li', 'summary', 'dt', 'details', 'rp', 'rt', 'rtc',
-	// Media and Source elmtents
+	// Embeded content (media) and scripting:
 	'script', 'style', 'img', 'video', 'audio', 'canvas', 'svg', 'map', 'object',
-	// Input elmtents
+	// Forms:
 	'input', 'textarea', 'select', 'option', 'optgroup', 'button',
-	// Table related elmtents
+	// Tables:
 	'table', 'tbody', 'thead', 'th', 'tr', 'td', 'caption', 'col', 'tfoot', 'colgroup'];
 
-	var ELMT = { NON_TEXT: NON_TEXT, BDRY: BDRY };
+	var preset = { HTML5: {
+	    NON_TEXT: NON_TEXT,
+	    BDRY: BDRY
+	  } };
 
-	Object.assign(_core2['default'], { ELMT: ELMT });
-	exports['default'] = ELMT;
+	Object.assign(_core2['default'], { preset: preset });
+
+	exports['default'] = preset;
 	module.exports = exports['default'];
 
 /***/ },
@@ -879,9 +886,8 @@
 	  version: '0.1.0',
 	  portionMode: 'retain',
 	  context: undefined,
-
-	  avoid: new Set(_core2['default'].ELMT.NON_TEXT),
-	  bdry: new Set(_core2['default'].ELMT.BDRY)
+	  avoid: new Set(_core2['default'].preset.HTML5.NON_TEXT),
+	  bdry: new Set(_core2['default'].preset.HTML5.BDRY)
 	});
 
 /***/ },

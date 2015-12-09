@@ -9,7 +9,7 @@ import './process'
 let Fibrio = ( ...arg ) => new Finder( ...arg )
 
 Object.assign( Fibrio, {
-  ELMT:    Finder.ELMT,
+  preset:  Finder.preset,
   finder:  Finder,
   fn:      Finder.prototype,
   matches: Finder.matches,

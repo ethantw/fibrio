@@ -97,7 +97,7 @@ Fibrio is released under MIT License.
 - [Static methods and properties](#static-methods-and-properties)
   * [.matches()](#matches)
   * [.fibrio](#fibrio)
-  * [.PRESET](#preset)
+  * [.preset](#preset)
   * [.fn](#fn)
 
 ## Initialisation
@@ -373,20 +373,20 @@ A string containing the Fibrio version number.
 
 **Alias:** `.version`
 
-### .PRESET
+### .preset
 An object currently containing one preset configuration key—`HTML5`—that helps Fibrio works compatibly with HTML5 markups.
 
 - **NON_TEXT** (`Array`)
 	
 	Names of non-text elements, whose content is better off ignored, such as embeded content (media), scripting and forms, etc.
 	
-	**Note:** This array forms the preset avoiding set.
+	**Note:** This array forms the preset avoiding set of each instance.
 - **BDRY** (`Array`)
 	
 	Names of boundary elements, whose content is usually considered a self-contained context rather than an aggregate entity with their previous siblings, i.e. sections, grouping content and tables, etc.
 	
 	
-	**Note:** This array forms the preset boundary set.
+	**Note:** This array forms the preset boundary set of each instance.
 
 **👁‍🗨 See also:** [HTML elements organised by function](http://www.w3.org/TR/html-markup/elements-by-function.html).
 

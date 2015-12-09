@@ -32,7 +32,7 @@ class Finder {
    * Check if a node matches with the configured
    * selectors.
    *
-   * @param {Cheerio|CheerioDOMObject|HTMLString}
+   * @param {CheerioDOMObject|HTMLString}
    *   The element to be checked with.
    * @param {String}
    *   The CSS Selector(s) to test.
@@ -112,7 +112,7 @@ class Finder {
    * encountered by the finder. Once the function returns
    * false, the element will be avoided.
    *
-   * @param {Cheerio|CheerioDOMObject}
+   * @param {CheerioDOMObject}
    */
   filterFn( node ) {
     const avoid = this.avoid || new Set()
@@ -130,7 +130,7 @@ class Finder {
    * true, the finder will start a new text aggregation
    * context; otherwise the previous text continues.
    *
-   * @param {Cheerio|CheerioDOMObject}
+   * @param {CheerioDOMObject}
    */
   bdryFn( node ) {
     const bdry = this.bdry || new Set()
@@ -152,7 +152,7 @@ class Finder {
    */
   addAvoid( selector ) {
     if ( !this.hasOwnProperty( 'avoid' )) {
-      this.avoid = new Set( Finder.ELMT.NON_TEXT )
+      this.avoid = new Set( Finder.preset.HTML5.NON_TEXT )
     }
 
     this.avoid::setAct( 'add', selector )
@@ -169,7 +169,7 @@ class Finder {
    */
   removeAvoid( selector ) {
     if ( !this.hasOwnProperty( 'avoid' )) {
-      this.avoid = new Set( Finder.ELMT.NON_TEXT )
+      this.avoid = new Set( Finder.preset.HTML5.NON_TEXT )
     }
 
     if ( typeof selector === 'undefined' ) {
@@ -190,7 +190,7 @@ class Finder {
    */
   addBdry( selector ) {
     if ( !this.hasOwnProperty( 'bdry' )) {
-      this.bdry = new Set( Finder.ELMT.BDRY )
+      this.bdry = new Set( Finder.preset.HTML5.BDRY )
     }
 
     this.bdry::setAct( 'add', selector )
@@ -207,7 +207,7 @@ class Finder {
    */
   removeBdry( selector ) {
     if ( !this.hasOwnProperty( 'bdry' )) {
-      this.bdry = new Set( Finder.ELMT.BDRY )
+      this.bdry = new Set( Finder.preset.HTML5.BDRY )
     }
 
     if ( typeof selector === 'undefined' ) {
