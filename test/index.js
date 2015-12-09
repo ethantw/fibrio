@@ -25,7 +25,7 @@ const htmlEq = ( a, b ) => {
 desc( 'Namespace', () => {
   it(
     'Fibrio identifier and versioning',
-    () => eq( Fibrio.Fibrio, Fibrio.version )
+    () => eq( Fibrio.fibrio, Fibrio.version )
   )
 
   it( 'Whose instance', () => {

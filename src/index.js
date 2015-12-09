@@ -15,7 +15,7 @@ Object.assign( Fibrio, {
   matches: Finder.matches,
 })
 
-Fibrio.Fibrio = Fibrio.version = '@VERSION'
+Fibrio.fibrio = Fibrio.version = '@VERSION'
 
 // ES6 module
 export default Fibrio

@@ -91,7 +91,7 @@
 	  matches: _core2['default'].matches
 	});
 
-	Fibrio.Fibrio = Fibrio.version = '0.1.0';
+	Fibrio.fibrio = Fibrio.version = '0.1.0';
 
 	// ES6 module
 	exports['default'] = Fibrio;
