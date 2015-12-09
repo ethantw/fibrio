@@ -253,7 +253,7 @@ fib.replace( [pattern,] replacement )
   * <code>$`</code>: the text preceding (before) the match.
   * `$'`: the text following (after) the match.
 
-  ***If a function is passed,*** it will be called on every portion of every match and is expected to return a string of replacement or a DOM node (`CheerioDOMObject`). Your function will receive both the `portion` and the encapsulating match (`mat`) of that portion:
+  ***If a function is passed,*** it will be invoked on every portion of every match and is expected to return a string of replacement or a DOM node (`CheerioDOMObject`). The function will receive both the `portion` and the encapsulating match (`mat`) of that portion:
   
   	* **portion** (`Object`)
   	  - **node**: The node (`CheerioDOMObject`) pertaining to the portion. Note that this node might not fully encapsulate part of a match, e.g. the node might contain additional text.
