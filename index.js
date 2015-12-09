@@ -750,7 +750,15 @@
 /* 5 */
 /***/ function(module, exports) {
 
-	
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var normalize = require('normalize-selector');
+	var split = require('split-css-selector');
+
 	/**
 	 * Add or delete elements of a set using CSS selectors.
 	 *
@@ -761,11 +769,6 @@
 	 * @param {String|Array}
 	 *   CSS selector to be added to or deleted from the set.
 	 */
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
 
 	exports['default'] = function (action, selector) {
 	  var _this = this;
@@ -777,11 +780,11 @@
 	  action = action.toLowerCase();
 
 	  if (typeof selector === 'string') {
-	    selector = selector.replace(/\,\s*/, ',').split(',');
+	    selector = split(normalize(selector));
 	  }
-	  if (Array.isArray(selector)) {
-	    selector.forEach(function (s) {
-	      return _this[action](s);
+	  if (selector && Array.isArray(selector)) {
+	    selector.forEach(function (sel) {
+	      return _this[action](sel);
 	    });
 	  }
 	  return this;

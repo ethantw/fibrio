@@ -1,4 +1,7 @@
 
+const normalize = IMPORT( 'normalize-selector' )
+const split     = IMPORT( 'split-css-selector' )
+
 /**
  * Add or delete elements of a set using CSS selectors.
  *
@@ -17,12 +20,10 @@ export default function( action, selector ) {
   action = action.toLowerCase()
 
   if ( typeof selector === 'string' ) {
-    selector = selector
-      .replace( /\,\s*/, ',' )
-      .split( ',' )
+    selector = split(normalize( selector ))
   }
-  if ( Array.isArray( selector )) {
-    selector.forEach( s => this[ action ]( s ))
+  if ( selector && Array.isArray( selector )) {
+    selector.forEach( sel => this[ action ]( sel ))
   }
   return this
 }
