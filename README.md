@@ -5,14 +5,14 @@
 - [API](#api)
 
 ## Intro
-Fibrio helps manipulate server-side (Node.js) DOM text in complex nested structures. The library provides classic string-like chaining syntax with an easy way to store and revert each modifications.
+Fibrio helps manipulate server-side (Node.js) DOM text in complex nested structures. The library provides classic string-like chaining syntax with an easy way to store and revert each modification.
 
 **Install:** `npm install fibrio`
 
 Fibrio controls HTML document objects through [Cheerio](https://cheeriojs.github.io/cheerio/) in the server side. The original algorithms are from [`findAndReplaceDOMText`](https://github.com/padolsey/findAndReplaceDOMText) by [James Padolsey](http://james.padolsey.com).
 
 ## Demo
-For example, 
+For example,
 
 ```html
 <!DOCTYPE html>
@@ -59,7 +59,7 @@ Results in,
 </body>
 </html>
 ```
-Fibrio is preset to work perfectly with HTML5-structured markups. As you can see from the demo, some elements are either ignored or considered as context boundaries by default, which you can customise according to your own needs.
+Fibrio is preset to work perfectly with HTML5-structured markups. As you can see from the demo, some elements are either ignored or considered as self-contained context during text-processing, which you can customise according to your own needs.
 
 ## Development
 - Install dependencies `npm install`
@@ -152,7 +152,7 @@ Returns a string of the current HTML of the root element (not necessarily the or
 
 ## Text-processing
 ### .action()
-Sets up the text pattern (regular expression), portion mode, text replacement and/or wrapper at once that will be later processed.
+Sets up the searching text pattern (regular expression), portion mode, text replacement and/or wrapper at once that will be later processed.
 
 ```js
 fib.action( action ) // {Object}
@@ -176,21 +176,21 @@ The **`action`** object includes:
 **⚠️ Notice that** the `.action()` method only sets up the intance’s grepping pattern, replacement, wrapper and/or portion mode that are yet to be processed. You will have to use the `.process()` or `.render()` method to process the previously set action(s) and get the result.
 
 ### .process()
-Processes the pre-set text-processing (replacing/wrapping) actions in the instance.
+Processes the previously defined text-processing (replacing/wrapping) actions in the instance.
 
 ```js
 fib.process() // Returns the instance itself
 ```
 
 ### .render()
-Processes the pre-set text-processing (replacing/wrapping) actions in the instance and returns the rendered HTML.
+Processes the previously defined text-processing (replacing/wrapping) actions in the instance and returns the rendered HTML.
 
 ```js
-fib.render() // Returns the processed HTML string
+fib.render() // Returns a string of the processed HTML of the root element
 ```
 
 ### .find()
-Sets up the text pattern for text-processing.
+Sets up the searching text pattern for text-processing.
 
 ```js
 fib.find( pattern, [returnMatch=false] )
@@ -215,7 +215,7 @@ fib.mode( [mode='retain'] )
 - **mode** (`String`, either `'retain'` or `'first'`)
 
 ### .wrap()
-Wraps the matched text with a clone of the configured stencil element.
+Wraps each matched text with a clone of the configured stencil element.
 
 ```js
 fib.wrap( [pattern,] wrapper )
@@ -224,11 +224,11 @@ fib.wrap( [pattern,] wrapper )
 #### Parametres
 - **pattern** *optional* (`RegExp | String`)
 
-	The text pattern to search within the context. *Optional* if a text pattern was previously set via `.action()` or `.find()`.
+	The text pattern to search within the context. *Optional* if a searching text pattern was previously set via `.action()` or `.find()`.
 	
 - <a name="wrapper"></a> **wrapper** (`String | CheerioDOMObject`) [#](#wrapper)
 
-  A string representing the node name of an element that will be wrapped around matches (e.g. `span`,  `em` or `<u class="wrapper"></u>`). Or a node (`CheerioDOMObject`) that will be cloned for each match portion.
+  A string representing the node name of an element that will be wrapped round matches (e.g. `span`,  `em` or `<u class="wrapper"></u>`). Or a node (`CheerioDOMObject`) that will be cloned for each match portion.
 
 ### .replace()
 Replaces the matched text with a configured replacement.
@@ -240,8 +240,7 @@ fib.replace( [pattern,] replacement )
 #### Parametres
 - **pattern** *optional* (`RegExp | String`)
 
-	The text pattern to search within the context. *Optional* if a text pattern was previously set via `.action()` or `.find()`.
-	
+  The text pattern to search within the context. *Optional* if a searching text pattern was previously set via `.action()` or `.find()`.
 - <a name="replacement"></a> **replacement** (`String | Function`) [#](#replacement)
 
 	A string of text to replace matches with, or a function which returns a string or a node (`CheerioDOMObject`) of replacement.
@@ -272,7 +271,7 @@ fib.replace( [pattern,] replacement )
     	- **endIdx**: The ending index of the match within the input.
 
 ### .revert()
-Reverts to a certain text-processing phase—determined by `level`—of the instance.
+Reverts to the original state or a certain text-processing phase—determined by `level`—of the instance.
 
 ```js
 fib.revert( [level=1] )
@@ -281,11 +280,11 @@ fib.revert( [level=1] )
 #### Parametres
 - **level** *optional* (`Number | String='all'`)
 
-	Determines how many levels to revert. The default value is `1`; revert back to the original state by assigning `'all'`.
+	Determines how many levels to revert. The default value is `1`. By assigning `'all'`, the Fibrio instance will revert back to the original state.
 
 ## DOM-related
 ### .qsa()
-Gets the descendants of the root element or current set of matched elements—filtered by CSS selector(s)—and makes them the effected context in text-processing.
+Gets the descendants of the root element or current set of matched elements—filtered by CSS selector(s)—which are the effected context for the next text-processing action.
 
 #### Aliases:
 - `.filter()`
@@ -353,7 +352,7 @@ fib.removeBdry( [selector] )
 
 ## Static methods and properties
 ### .matches()
-Checks whether or not an element matches with the configured selectors.
+Checks whether or not an element matches with the configured selector(s).
 
 ```js
 Fibrio.matches( elmt, selector )
