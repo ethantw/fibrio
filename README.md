@@ -226,7 +226,7 @@ fib.wrap( [pattern,] wrapper )
 
 	The text pattern to search within the context. *Optional* if a text pattern was previously set via `.action()` or `.find()`.
 	
-- <a name="wrapper"></a> **wrapper** (`String | CheerioDOMObject`)
+- <a name="wrapper"></a> **wrapper** (`String | CheerioDOMObject`) [#](#wrapper)
 
   A string representing the node name of an element that will be wrapped around matches (e.g. `span`,  `em` or `<u class="wrapper"></u>`). Or a node (`CheerioDOMObject`) that will be cloned for each match portion.
 
@@ -242,7 +242,7 @@ fib.replace( [pattern,] replacement )
 
 	The text pattern to search within the context. *Optional* if a text pattern was previously set via `.action()` or `.find()`.
 	
-- <a name="replacement"></a> **replacement** (`String | Function`)
+- <a name="replacement"></a> **replacement** (`String | Function`) [#](#replacement)
 
 	A string of text to replace matches with, or a function which returns a string or a node (`CheerioDOMObject`) of replacement.
 
