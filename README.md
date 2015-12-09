@@ -62,7 +62,7 @@ Results in,
 Fibrio is preset to work perfectly with HTML5-structured markups. As you can see from the demo, some elements are either ignored or considered as context boundaries by default, which you can customise according to your own needs.
 
 ## Development
-- Install dependencies `sudo npm install`
+- Install dependencies `npm install`
 - Test `npm test`
 
 ## License
@@ -72,10 +72,33 @@ Fibrio is released under MIT License.
 
 # API
 - [Initialisation](#initialisation)
+	* [Import](#import)
+	* [Initialise](#initialise)
+	* [Constructor](#constructor)
 - [Properties](#properties)
+  * [.text](#text)
+  * [.match](#match)
+  * [.html](#html)
 - [Text-processing](#text-processing)
-- [DOM traversing](#dom-traversing)
+  * [.action()](#action)
+  * [.process()](#process)
+  * [.render()](#render)
+  * [.find()](#find)
+  * [.mode()](#mode)
+  * [.wrap()](#wrap)
+  * [.replace()](#replace)
+  * [.revert()](#revert)
+- [DOM-related](#dom-related)
+  * [.qsa()](#qsa)
+  * [.addAvoid()](#addavoid)
+  * [.removeAvoid()](#removeavoid)
+  * [.addBdry()](#addbdry)
+  * [.removeBdry()](#removebdry)
 - [Static methods and properties](#static-methods-and-properties)
+  * [.matches()](#matches)
+  * [.fibrio](#fibrio)
+  * [.PRESET](#preset)
+  * [.fn](#fn)
 
 ## Initialisation
 ### Import
@@ -94,10 +117,10 @@ import Fibrio from 'fibrio'
 
 ### Initialise
 ```js
-let fib = Fibrio( html, noPreset=false )
+let fib = Fibrio( html, [noPreset=false] )
 ```
 #### Parametres
-- **html** (`String`)
+- **html** (`HTMLString`)
 	
 	A string of HTML to be processed.
 	
@@ -116,7 +139,7 @@ Fibrio() instanceof Fibrio.finder // true
 
 ```
 ## Properties 
-**⚠️ Notice that** the following properties are read-only.
+**⚠️ Notice that** the following properties are *read-only*.
 
 ### .text
 Returns an array of the text aggregation of the root element.
@@ -153,14 +176,14 @@ The **`action`** object includes:
 **⚠️ Notice that** the `.action()` method only sets up the intance’s grepping pattern, replacement, wrapper and/or portion mode that are yet to be processed. You will have to use the `.process()` or `.render()` method to process the previously set action(s) and get the result.
 
 ### .process()
-Processes the pre-set replacing/wrapping actions in the instance.
+Processes the pre-set text-processing (replacing/wrapping) actions in the instance.
 
 ```js
 fib.process() // Returns the instance itself
 ```
 
 ### .render()
-Processes the pre-set replacing/wrapping actions in the instance and returns the rendered HTML.
+Processes the pre-set text-processing (replacing/wrapping) actions in the instance and returns the rendered HTML.
 
 ```js
 fib.render() // Returns the processed HTML string
@@ -170,7 +193,7 @@ fib.render() // Returns the processed HTML string
 Sets up the text pattern for text-processing.
 
 ```js
-fib.find( pattern, returnMatch=false )
+fib.find( pattern, [returnMatch=false] )
 ```
 
 #### Parametres
@@ -185,7 +208,7 @@ fib.find( pattern, returnMatch=false )
 Sets up the portion mode indicating whether to re-use the existing portions (`'retain'`) during text-processing or to place the entire replacement in the first found match portion’s node (`'first'`). *The default value is* `'retain'`.
 
 ```js
-fib.mode( mode='retain' )
+fib.mode( [mode='retain'] )
 ```
 
 #### Parametres
@@ -195,7 +218,7 @@ fib.mode( mode='retain' )
 Wraps the matched text with a clone of the configured stencil element.
 
 ```js
-fib.wrap( pattern, wrapper )
+fib.wrap( [pattern,] wrapper )
 ```
 
 #### Parametres
@@ -211,7 +234,7 @@ fib.wrap( pattern, wrapper )
 Replaces the matched text with a configured replacement.
 
 ```js
-fib.replace( pattern, replacement )
+fib.replace( [pattern,] replacement )
 ```
 
 #### Parametres
@@ -234,7 +257,7 @@ fib.replace( pattern, replacement )
   
   	* **portion** (`Object`)
   	  - **node**: The node (`CheerioDOMObject`) pertaining to the portion. Note that this node might not fully encapsulate part of a match, e.g. the node might contain additional text.
-  	  - **idx**: The index of the portion—`0` is the first portion of the match, etc. (key alias: **index**)
+  	  - **idx**: The index of the portion—`0` is the first portion of the match, etc. (alias: **index**)
   	  - **text**: The text of the portion relevant to the match.
   	  - **idxInMat**: The index of the portion within the match.
   	  - **idxInNode**: The index of the portion text within the node.
@@ -243,26 +266,26 @@ fib.replace( pattern, replacement )
   	* **mat** (`Array`)
     	- **[0]**: The entire string of the match.
     	- **[<var>n</var>]**: The <var>n</var>th captured group (parenthesised submatch), if any.
-    	- **idx**: The index of the match (key alias: **index**).
+    	- **idx**: The index of the match (alias: **index**).
     	- **input**: The original text aggregation being processed.
     	- **startIdx**: The index of the match within the input.
     	- **endIdx**: The ending index of the match within the input.
 
 ### .revert()
-Revert to a certain text-processing phase—determined by `level`—of the instance.
+Reverts to a certain text-processing phase—determined by `level`—of the instance.
 
 ```js
-fib.revert( level=1 )
+fib.revert( [level=1] )
 ```
 
 #### Parametres
 - **level** *optional* (`Number | String='all'`)
 
-	Indicates how many levels to revert.
+	Determines how many levels to revert. The default value is `1`; revert back to the original state by assigning `'all'`.
 
-## DOM traversing
+## DOM-related
 ### .qsa()
-Gets the descendants of the root element or current set of matched elements, filtered by a CSS selector or Cheerio DOM object.
+Gets the descendants of the root element or current set of matched elements—filtered by CSS selector(s)—and makes them the effected context in text-processing.
 
 #### Aliases:
 - `.filter()`
@@ -277,18 +300,56 @@ fib.filter( selector )
 fib.query( selector )
 fib.$( selector )
 ```
+#### Parametres
+- **selector** (`String`)
+	
+	CSS selector(s) to filter the context with.
 
 ### .addAvoid()
-Adds avoiding CSS selector(s) that will be filtered out during text-processing.
+Adds CSS selector(s) to the avoiding set that, when matched with certain elements during text-processing, the content of these elements will be ignored and remain the same.
+
+```js
+fib.addAvoid( selector )
+```
+#### Parametres
+- **selector** (`String`)
+
+	CSS selector(s) to be added to the avoiding set.
 
 ### .removeAvoid()
-Removes certain avoiding CSS selector(s) or the entire avoiding CSS selector set.
+Removes certain avoiding CSS selector(s) or clears the entire avoiding CSS selector set.
+
+```js
+fib.removeAvoid( [selector] )
+```
+#### Parametres
+- **selector** *optional* (`String`)
+	
+	CSS selector(s) to be removed from the avoiding set. If left undefined, the methods clears the entire avoiding set including the preset configuration.
 
 ### .addBdry()
-Adds boundary CSS selector(s) that will be considered a boundary during text-processing and start new text aggregation context(s).
+Adds CSS selector(s) to the boundary set that, when matched with certain elements during text-processing, the content of these elements will form a new self-contained context that are *not* an aggregating entity with its previous sibling(s).
+
+```js
+fib.addBdry( selector )
+```
+
+#### Parametres
+- **selector** (`String`)
+
+	CSS selector(s) to be added to the boundary set.
 
 ### .removeBdry()
-Removes certain boundary CSS selector(s) or the entire boundary CSS selector set.
+Removes certain boundary CSS selector(s) or clears the entire boundary CSS selector set.
+
+```js
+fib.removeBdry( [selector] )
+```
+
+#### Parametres
+- **selector** *optional* (`String`)
+	
+	CSS selector(s) to be removed from the boundary set. If left undefined, the methods clears the entire boundary set including the preset configuration.
 
 ## Static methods and properties
 ### .matches()
@@ -307,3 +368,30 @@ Fibrio.matches( elmt, selector )
 
   CSS selector(s) to check.
 
+### .fibrio
+A string containing the Fibrio version number.
+
+**Alias:** `.version`
+
+### .PRESET
+An object currently containing one preset configuration key—`HTML5`—that helps Fibrio works compatibly with HTML5 markups.
+
+- **NON_TEXT** (`Array`)
+	
+	Names of non-text elements, whose content is better off ignored, such as embeded content (media), scripting and forms, etc.
+	
+	**Note:** This array forms the preset avoiding set.
+- **BDRY** (`Array`)
+	
+	Names of boundary elements, whose content is usually considered a self-contained context rather than an aggregate entity with their previous siblings, i.e. sections, grouping content and tables, etc.
+	
+	
+	**Note:** This array forms the preset boundary set.
+
+**👁‍🗨 See also:** [HTML elements organised by function](http://www.w3.org/TR/html-markup/elements-by-function.html).
+
+
+### .fn
+The prototype alias of the finder constructor of Fibrio.
+
+**⚠️ DO NOT** directly add properties or methods to `Fibrio.prototype`; otherwise, it may not work as expected.
