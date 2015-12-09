@@ -350,7 +350,7 @@ Object.assign( Finder.fn, {
 
     string = string.replace(
       /\$(\d+|&|`|')/g,
-      ( $0, t ) => {
+      ( _, t ) => {
         let replacement
 
         switch ( t ) {

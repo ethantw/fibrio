@@ -1368,7 +1368,7 @@
 	      return '';
 	    }
 
-	    string = string.replace(/\$(\d+|&|`|')/g, function ($0, t) {
+	    string = string.replace(/\$(\d+|&|`|')/g, function (_, t) {
 	      var replacement = undefined;
 
 	      switch (t) {
