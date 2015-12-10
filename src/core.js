@@ -10,8 +10,9 @@ const $ = IMPORT( 'cheerio' )
 
 class Finder {
   /**
-   * Create a new finder with an HTML context.
    * @constructor
+   * Create a new Finder instance with an HTML
+   * string to be processed.
    *
    * @param {String} HTML string
    * @param {Boolean} [noPreset=false]
@@ -29,13 +30,13 @@ class Finder {
   }
 
   /**
-   * Check if a node matches with the configured
-   * selectors.
+   * Check if an element matches with the configured
+   * selector(s).
    *
    * @param {CheerioDOMObject|HTMLString}
    *   The element to be checked with.
    * @param {String}
-   *   The CSS Selector(s) to test.
+   *   The CSS selector(s) to test.
    */
   static matches( elmt, selector ) {
     elmt = $( elmt )
@@ -50,6 +51,11 @@ class Finder {
     return false
   }
 
+  /**
+   * Return an array of the text aggregation
+   * of the root element.
+   *
+   */
   get text() {
     if ( typeof this.root === 'undefined' ) {
       return this.aggregate()
@@ -64,6 +70,11 @@ class Finder {
     return ret
   }
 
+  /**
+   * Return an array of the matched text with their
+   * metadata.
+   *
+   */
   get match() {
     if ( typeof this.root === 'undefined' ) {
       return this.grep()
@@ -78,11 +89,26 @@ class Finder {
     return ret
   }
 
+  /**
+   * Return a string of the current HTML of the
+   * root element.
+   *
+   */
   get html() {
     return ( this.root || this.context ).html()
       .replace( /<\/?fibrio\-text>/gi, '' )
   }
 
+  /**
+   * Get the descendants of the root element or
+   * current set of matched elements—filtered by
+   * CSS selector(s)—which are the effected context
+   * for the next text-processing action.
+   *
+   * @param {String}
+   *   CSS selector(s) to filter descendants.
+   *
+   */
   qsa( selector ) {
     if ( !this.root ) {
       this.root = this.context
@@ -108,11 +134,14 @@ class Finder {
   }
 
   /**
-   * The default function to be called on every element
-   * encountered by the finder. Once the function returns
-   * false, the element will be avoided.
+   * The default function to be invoked during DOM
+   * traversing. Once the function returns *false*,
+   * the content of that element will be ignored.
    *
    * @param {CheerioDOMObject}
+   * @return {Boolean}
+   *   True if the node matches with CSS selectors in
+   *   `this.avoid` set.
    */
   filterFn( node ) {
     const avoid = this.avoid || new Set()
@@ -125,12 +154,16 @@ class Finder {
   }
 
   /**
-   * The default function to be called on every element
-   * encountered by the finder. Once the function returns
-   * true, the finder will start a new text aggregation
-   * context; otherwise the previous text continues.
+   * The default function to be invoked during DOM
+   * traversing. Once the function returns *true*,
+   * Finder will start a new context with the current
+   * element; otherwise, the previous text aggregation
+   * continues.
    *
    * @param {CheerioDOMObject}
+   * @return {Boolean}
+   *   True if the node matches with CSS selectors in
+   *   `this.bdry` set.
    */
   bdryFn( node ) {
     const bdry = this.bdry || new Set()
@@ -144,11 +177,12 @@ class Finder {
   }
 
   /**
-   * Add new CSS selectors that, when matched with an
-   * element in text processing, the element will be
-   * avoided by the finder.
+   * Add CSS selector(s) to the avoiding set that,
+   * when matched with certain elements during
+   * text-processing, the content of these elements
+   * will be ignored and remain the same.
    *
-   * @param {String|Array} CSS selectors
+   * @param {String|Array} CSS selector(s)
    */
   addAvoid( selector ) {
     if ( !this.hasOwnProperty( 'avoid' )) {
@@ -160,10 +194,11 @@ class Finder {
   }
 
   /**
-   * Remove the avoiding CSS selectors
+   * Remove certain avoiding CSS selector(s) or
+   * clear the entire avoiding CSS selector set.
    *
    * @param {String|Array|null}
-   *   CSS selectors
+   *   CSS selector(s)
    *   Or, if left blank, the method clears the entire
    *   avoiding selector set.
    */
@@ -182,11 +217,14 @@ class Finder {
   }
 
   /**
-   * Add new CSS selectors that, when matched with an
-   * element in text aggregating, the element will
-   * start a new text aggregation context.
+   * Add CSS selector(s) to the boundary set that,
+   * when matched with certain elements during
+   * text-processing, the content of these elements
+   * will form a new self-contained context that are
+   * not an aggregating entity with its previous
+   * sibling(s).
    *
-   * @param {String|Array|null} CSS selectors
+   * @param {String|Array|null} CSS selector(s)
    */
   addBdry( selector ) {
     if ( !this.hasOwnProperty( 'bdry' )) {
@@ -198,10 +236,11 @@ class Finder {
   }
 
   /**
-   * Remove the boundary CSS selectors
+   * Remove certain boundary CSS selector(s) or
+   * clear the entire boundary CSS selector set.
    *
    * @param {String|Array|null}
-   *   CSS selectors
+   *   CSS selector(s)
    *   Or, if left blank, the method clears the entire
    *   boundary selector set.
    */
@@ -220,8 +259,9 @@ class Finder {
   }
 
   /**
-   * Set actions to the instance without the actual
-   * procedure for future processing.
+   * Set up the searching text pattern (regular expression),
+   * portion mode, text replacement and/or wrapper at once
+   * that will be later processed.
    *
    * @param {Object} Actions
    * @return {Fibrio} The instance
@@ -238,7 +278,7 @@ class Finder {
   }
 
   /**
-   * Set up the text pattern for the finder to process.
+   * Set up the searching text pattern for text-processing.
    *
    * @param {String|RegExp}
    * @param {Boolean} [returnMatch=false]
@@ -252,8 +292,7 @@ class Finder {
   }
 
   /**
-   * Replace the matched text with configured
-   * replacements.
+   * Replace the matched text with a configured replacement.
    *
    * @arg {RegExp|String} [find=this.find]
    *   A pattern for the Finder to grep
@@ -272,8 +311,8 @@ class Finder {
   }
 
   /**
-   * Wrap the matched text with configured
-   * element/node.
+   * Wrap each matched text with a clone of
+   * the configured stencil element.
    *
    * @arg {RegExp|String} [find=this.find]
    *   A pattern for the Finder to grep
@@ -292,7 +331,8 @@ class Finder {
   }
 
   /**
-   * Process (replace/wrap) the matched text.
+   * Process the previously defined text-processing
+   * (replacing/wrapping) actions in the instance.
    *
    * @return {Fibrio} The instance
    */
@@ -328,8 +368,9 @@ class Finder {
   }
 
   /**
-   * Process (replace/wrap) the matched text and
-   * return the processed HTML.
+   * Process the previously defined text-processing
+   * (replacing/wrapping) actions in the instance
+   * and return the rendered HTML.
    *
    * @return {string}
    *   The processed HTML of the context
@@ -340,8 +381,8 @@ class Finder {
   }
 
   /**
-   * Revert to a certain text-processing phase of
-   * the instance.
+   * Revert to the original state or a certain
+   * text-processing phase of the instance.
    *
    * @param {Number|String} [level=1]
    *   The level — a number or a string of `all` —
@@ -362,7 +403,7 @@ class Finder {
 
     let length  = this.phase.length
 
-    // If we’re to revert back to the original state
+    // If we’re to revert back to the original state.
     if (
       level === 'all' ||
       level >= length ||

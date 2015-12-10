@@ -91,12 +91,12 @@
 	  matches: _core2['default'].matches
 	});
 
-	Fibrio.fibrio = Fibrio.version = '0.1.0';
+	Fibrio.fibrio = Fibrio.version = Fibrio.fn.fibrio = Fibrio.fn.version = '0.1.0';
 
-	// ES6 module
+	// ES6 module:
 	exports['default'] = Fibrio;
 
-	// NPM (CommonJS) module
+	// NPM (CommonJS) module:
 	EXPORT_ONCE(Fibrio);
 	module.exports = exports['default'];
 
@@ -139,8 +139,9 @@
 
 	var Finder = (function () {
 	  /**
-	   * Create a new finder with an HTML context.
 	   * @constructor
+	   * Create a new Finder instance with an HTML
+	   * string to be processed.
 	   *
 	   * @param {String} HTML string
 	   * @param {Boolean} [noPreset=false]
@@ -163,17 +164,28 @@
 	  }
 
 	  /**
-	   * Check if a node matches with the configured
-	   * selectors.
+	   * Check if an element matches with the configured
+	   * selector(s).
 	   *
 	   * @param {CheerioDOMObject|HTMLString}
 	   *   The element to be checked with.
 	   * @param {String}
-	   *   The CSS Selector(s) to test.
+	   *   The CSS selector(s) to test.
 	   */
 
 	  _createClass(Finder, [{
 	    key: 'qsa',
+
+	    /**
+	     * Get the descendants of the root element or
+	     * current set of matched elements—filtered by
+	     * CSS selector(s)—which are the effected context
+	     * for the next text-processing action.
+	     *
+	     * @param {String}
+	     *   CSS selector(s) to filter descendants.
+	     *
+	     */
 	    value: function qsa(selector) {
 	      if (!this.root) {
 	        this.root = this.context;
@@ -199,11 +211,14 @@
 	    }
 
 	    /**
-	     * The default function to be called on every element
-	     * encountered by the finder. Once the function returns
-	     * false, the element will be avoided.
+	     * The default function to be invoked during DOM
+	     * traversing. Once the function returns *false*,
+	     * the content of that element will be ignored.
 	     *
 	     * @param {CheerioDOMObject}
+	     * @return {Boolean}
+	     *   True if the node matches with CSS selectors in
+	     *   `this.avoid` set.
 	     */
 	  }, {
 	    key: 'filterFn',
@@ -218,12 +233,16 @@
 	    }
 
 	    /**
-	     * The default function to be called on every element
-	     * encountered by the finder. Once the function returns
-	     * true, the finder will start a new text aggregation
-	     * context; otherwise the previous text continues.
+	     * The default function to be invoked during DOM
+	     * traversing. Once the function returns *true*,
+	     * Finder will start a new context with the current
+	     * element; otherwise, the previous text aggregation
+	     * continues.
 	     *
 	     * @param {CheerioDOMObject}
+	     * @return {Boolean}
+	     *   True if the node matches with CSS selectors in
+	     *   `this.bdry` set.
 	     */
 	  }, {
 	    key: 'bdryFn',
@@ -239,11 +258,12 @@
 	    }
 
 	    /**
-	     * Add new CSS selectors that, when matched with an
-	     * element in text processing, the element will be
-	     * avoided by the finder.
+	     * Add CSS selector(s) to the avoiding set that,
+	     * when matched with certain elements during
+	     * text-processing, the content of these elements
+	     * will be ignored and remain the same.
 	     *
-	     * @param {String|Array} CSS selectors
+	     * @param {String|Array} CSS selector(s)
 	     */
 	  }, {
 	    key: 'addAvoid',
@@ -259,10 +279,11 @@
 	    }
 
 	    /**
-	     * Remove the avoiding CSS selectors
+	     * Remove certain avoiding CSS selector(s) or
+	     * clear the entire avoiding CSS selector set.
 	     *
 	     * @param {String|Array|null}
-	     *   CSS selectors
+	     *   CSS selector(s)
 	     *   Or, if left blank, the method clears the entire
 	     *   avoiding selector set.
 	     */
@@ -285,11 +306,14 @@
 	    }
 
 	    /**
-	     * Add new CSS selectors that, when matched with an
-	     * element in text aggregating, the element will
-	     * start a new text aggregation context.
+	     * Add CSS selector(s) to the boundary set that,
+	     * when matched with certain elements during
+	     * text-processing, the content of these elements
+	     * will form a new self-contained context that are
+	     * not an aggregating entity with its previous
+	     * sibling(s).
 	     *
-	     * @param {String|Array|null} CSS selectors
+	     * @param {String|Array|null} CSS selector(s)
 	     */
 	  }, {
 	    key: 'addBdry',
@@ -305,10 +329,11 @@
 	    }
 
 	    /**
-	     * Remove the boundary CSS selectors
+	     * Remove certain boundary CSS selector(s) or
+	     * clear the entire boundary CSS selector set.
 	     *
 	     * @param {String|Array|null}
-	     *   CSS selectors
+	     *   CSS selector(s)
 	     *   Or, if left blank, the method clears the entire
 	     *   boundary selector set.
 	     */
@@ -331,8 +356,9 @@
 	    }
 
 	    /**
-	     * Set actions to the instance without the actual
-	     * procedure for future processing.
+	     * Set up the searching text pattern (regular expression),
+	     * portion mode, text replacement and/or wrapper at once
+	     * that will be later processed.
 	     *
 	     * @param {Object} Actions
 	     * @return {Fibrio} The instance
@@ -351,7 +377,7 @@
 	    }
 
 	    /**
-	     * Set up the text pattern for the finder to process.
+	     * Set up the searching text pattern for text-processing.
 	     *
 	     * @param {String|RegExp}
 	     * @param {Boolean} [returnMatch=false]
@@ -369,8 +395,7 @@
 	    }
 
 	    /**
-	     * Replace the matched text with configured
-	     * replacements.
+	     * Replace the matched text with a configured replacement.
 	     *
 	     * @arg {RegExp|String} [find=this.find]
 	     *   A pattern for the Finder to grep
@@ -395,8 +420,8 @@
 	    }
 
 	    /**
-	     * Wrap the matched text with configured
-	     * element/node.
+	     * Wrap each matched text with a clone of
+	     * the configured stencil element.
 	     *
 	     * @arg {RegExp|String} [find=this.find]
 	     *   A pattern for the Finder to grep
@@ -421,7 +446,8 @@
 	    }
 
 	    /**
-	     * Process (replace/wrap) the matched text.
+	     * Process the previously defined text-processing
+	     * (replacing/wrapping) actions in the instance.
 	     *
 	     * @return {Fibrio} The instance
 	     */
@@ -455,8 +481,9 @@
 	    }
 
 	    /**
-	     * Process (replace/wrap) the matched text and
-	     * return the processed HTML.
+	     * Process the previously defined text-processing
+	     * (replacing/wrapping) actions in the instance
+	     * and return the rendered HTML.
 	     *
 	     * @return {string}
 	     *   The processed HTML of the context
@@ -469,8 +496,8 @@
 	    }
 
 	    /**
-	     * Revert to a certain text-processing phase of
-	     * the instance.
+	     * Revert to the original state or a certain
+	     * text-processing phase of the instance.
 	     *
 	     * @param {Number|String} [level=1]
 	     *   The level — a number or a string of `all` —
@@ -493,7 +520,7 @@
 
 	      var length = this.phase.length;
 
-	      // If we’re to revert back to the original state
+	      // If we’re to revert back to the original state.
 	      if (level === 'all' || level >= length || Number.isNaN(level)) {
 	        _fnRevertTo2['default'].call(this, this.phase[0]);
 	        this.phase = [];
@@ -505,6 +532,12 @@
 	    }
 	  }, {
 	    key: 'text',
+
+	    /**
+	     * Return an array of the text aggregation
+	     * of the root element.
+	     *
+	     */
 	    get: function get() {
 	      if (typeof this.root === 'undefined') {
 	        return this.aggregate();
@@ -518,6 +551,12 @@
 	      }
 	      return ret;
 	    }
+
+	    /**
+	     * Return an array of the matched text with their
+	     * metadata.
+	     *
+	     */
 	  }, {
 	    key: 'match',
 	    get: function get() {
@@ -533,6 +572,12 @@
 	      }
 	      return ret;
 	    }
+
+	    /**
+	     * Return a string of the current HTML of the
+	     * root element.
+	     *
+	     */
 	  }, {
 	    key: 'html',
 	    get: function get() {
@@ -883,7 +928,6 @@
 	var _core2 = _interopRequireDefault(_core);
 
 	Object.assign(_core2['default'].fn, {
-	  version: '0.1.0',
 	  portionMode: 'retain',
 	  context: undefined,
 	  avoid: new Set(_core2['default'].preset.HTML5.NON_TEXT),
@@ -906,13 +950,14 @@
 
 	Object.assign(_core2['default'].fn, {
 	  /**
-	   * Get the text aggregate of a node w/o resorting to
-	   * `$node.text()`
+	   * Get the text aggregation of a node w/o being
+	   * normalized and resorting to `$node.text()`.
 	   *
-	   * @param {Cheerio}
+	   * @param {CheerioDOMObject}
 	   * @return {Array}
-	   *   The entire text aggregation of the instance’s
-	   *   context node w/o the avoided parts.
+	   *   An array of the text aggregation of the given node,
+	   *   divided by boundaries, w/o the content of the
+	   *   ignored elements.
 	   */
 	  aggregate: function aggregate() {
 	    var _context;
@@ -973,10 +1018,12 @@
 
 	Object.assign(_core2['default'].fn, {
 	  /**
-	   * Gre(p) the matches with the text aggregation.
+	   * Gre(p) using the text aggregation.
 	   *
+	   * @param {Array}
+	   *   Text aggragation.
 	   * @return {Array}
-	   *   The matches within the instance’s context node
+	   *   The matches and their metadata.
 	   */
 	  grep: function grep() {
 	    var aggr = arguments.length <= 0 || arguments[0] === undefined ? this.text : arguments[0];
@@ -994,7 +1041,7 @@
 	        var text = aggr[i];
 
 	        if (typeof text !== 'string') {
-	          // Deal with nested contexts
+	          // Deal with nested contexts:
 	          matchAggr(text);
 	          continue;
 	        }
@@ -1016,13 +1063,18 @@
 	  },
 
 	  /**
-	   * Prepare the single match object with the its
-	   * metadata.
+	   * Prepare metadata for single match array (returned
+	   * by `RegExp.fn.exec` or `String.fn.match`).
 	   *
-	   * @return {Object} Match
+	   * @param {Array}  Match
+	   * @param {Number} Index of the match
+	   * @param {Number} Offset of the match
+	   *
+	   * @return {Array}
+	   *   The original match array with addtional metadata.
 	   */
 	  prepMat: function prepMat(mat, matIdx, offset) {
-	    if (!mat[0]) throw new Error('Fibrio cannot handle zero-length matches');
+	    if (!mat[0]) throw new Error('Fibrio cannot handle zero-length matches.');
 
 	    mat.idx = mat.index;
 	    mat.startIdx = offset + mat.idx;
@@ -1051,8 +1103,9 @@
 
 	Object.assign(_core2['default'].fn, {
 	  /**
-	   * Process (wrap/replace) the matched text with the
-	   * instance’s previous set wrapper/replacement.
+	   * Process (wrapping/replacing) the matched text
+	   * with the previously defined wrapper and/or
+	   * replacement.
 	   *
 	   * @return {Fibrio} The instance
 	   */
@@ -1131,9 +1184,9 @@
 
 	        var old = Object.assign({}, current);
 
-	        // Method `replaceMat` returns the end portion node,
+	        // Method `.replaceMat()` returns the end portion node,
 	        // and then we continue the recursion from its next
-	        // node.
+	        // sibling.
 	        atIdx -= endPortion.node.data.length - endPortion.endIdxInNode;
 
 	        current = this.replaceMat(context, mat, startPortion, innerPortion, endPortion);
@@ -1158,8 +1211,8 @@
 	          {
 	            var cloned = Array.from(nodeStack);
 
-	            cloned.shift(); // Omit the root element
-	            cloned.pop(); // Omit current text node’s parent element
+	            cloned.shift(); // Omit the root element.
+	            cloned.pop(); // Omit current text node’s parent element.
 
 	            while ($.contains(cloned.pop(), old)) {
 	              rerenderedLevel++;
@@ -1179,14 +1232,14 @@
 	          nodeStack = nodeStack.concat(update);
 	        }
 
-	        // Move down
+	        // Move down:
 	      } else if (!doAvoidNode && (_context = current, _fnManipulate.first).call(_context)) {
 	          var _context3;
 
 	          nodeStack.push(current);
 	          current = (_context3 = current, _fnManipulate.first).call(_context3);
 	          continue;
-	          // Move forward
+	          // Move forward:
 	        } else if (!doAvoidNode && (_context = current, _fnManipulate.next).call(_context)) {
 	            var _context4;
 
@@ -1197,17 +1250,17 @@
 	      while (true) {
 	        var _context5;
 
-	        // Move forward
+	        // Move forward:
 	        if ((_context5 = current, _fnManipulate.next).call(_context5)) {
 	          var _context6;
 
 	          current = (_context6 = current, _fnManipulate.next).call(_context6);
 	          break;
 	        }
-	        // Move up (and move forward again)
+	        // Move up (and move forward again):
 	        current = nodeStack.pop();
 
-	        // Done with the assigned context from the Finder
+	        // Done with the given context:
 	        if (current === context) break out;
 	      }
 	    }
@@ -1217,7 +1270,7 @@
 	  /**
 	   * Replace the matched text portion(s) with the configured
 	   * replacement (node/element) and return the endPortion
-	   * node for `processMatch` to iterate.
+	   * node for `.processMatch()` to iterate.
 	   *
 	   * @return {CheerioDOMObject}
 	   */
@@ -1243,15 +1296,15 @@
 	      var idx = matElmt[0].children.indexOf(matNode);
 	      var replacement = undefined;
 
-	      // Grab the text before the match
+	      // Grab the text before the match:
 	      if (startPortion.idxInNode > 0) {
 	        preceding = data.substring(0, startPortion.idxInNode);
 	      }
 
-	      // Get the replacement
+	      // Get the processed replacement:
 	      replacement = (_context7 = this.getPortionReplacementElmt(endPortion, mat), _fnManipulate.html).call(_context7);
 
-	      // Grab the text after the match
+	      // Grab the text after the match:
 	      if (endPortion.endIdxInNode < data.length) {
 	        following = data.substring(endPortion.endIdxInNode);
 	      }
@@ -1260,7 +1313,7 @@
 
 	      matElmt.html(matElmt.html().replace(label[0], preceding + replacement + following));
 
-	      // Return the new node
+	      // Return the new node:
 	      return matElmt.contents()[preceding ? idx + 1 : idx];
 	    } else {
 	      var _context8;
@@ -1324,7 +1377,7 @@
 	    var wrapper = this.wrapper;
 
 	    if (wrapper && (_context10 = wrapper, _fnManipulate.prop).call(_context10, 'type') && (_context10 = wrapper, _fnManipulate.prop).call(_context10, 'type') !== 'text') {
-	      // Clone the element from its HTML
+	      // Clone the element from its HTML:
 	      wrapper = $($.html(wrapper));
 	    }
 
@@ -1340,7 +1393,8 @@
 	      return (0, _fnManipulate.createText)(replacement);
 	    }
 
-	    var elmt = typeof wrapper === 'string' ? /^<([\w\-]+)\s?.*>.*<\/\1>$/gi.test(wrapper) ? $(wrapper) : $('<' + wrapper + '></' + wrapper + '>') : wrapper;
+	    var elmt = typeof wrapper === 'string' ? /^<([\w\-]+)\s?.*>.*<\/\1>$/gi.test(wrapper) //// TODO: more accurate and strict.
+	    ? $(wrapper) : $('<' + wrapper + '></' + wrapper + '>') : wrapper;
 
 	    replacement = (0, _fnManipulate.createText)(this.prepReplacementString(replacement, portion, mat, matIdx));
 
@@ -1356,8 +1410,8 @@
 	  },
 
 	  /**
-	   * Prepare the replacement text according to the given
-	   * portion.
+	   * Work on the replacement (if passed a string) according
+	   * to the given portion and returned the processed one.
 	   *
 	   * @return {String}
 	   */
@@ -1372,15 +1426,23 @@
 	      var replacement = undefined;
 
 	      switch (t) {
+	        // The entire match:
 	        case '&':
 	          replacement = mat[0];
 	          break;
+
+	        // Text preceding the match:
 	        case '`':
 	          replacement = mat.input.substring(0, mat.startIdx);
 	          break;
+
+	        // Text following the match:
 	        case '\'':
 	          replacement = mat.input.substring(mat.endIdx);
 	          break;
+
+	        // `0`: The entire match; or,
+	        // `n`: Captured groups (parenthesised submatches):
 	        default:
 	          replacement = mat[+t];
 	      }
@@ -1391,7 +1453,7 @@
 	    if (portion.isEnd) {
 	      return string.substring(portion.idxInMat);
 	    }
-	    return string.substring(portion.idxInMat, portion.idxInMat + portion.text.length);
+	    return string.substr(portion.idxInMat, portion.text.length);
 	  }
 	});
 

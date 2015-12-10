@@ -11,8 +11,9 @@ const $ = IMPORT( 'cheerio' )
 
 Object.assign( Finder.fn, {
   /**
-   * Process (wrap/replace) the matched text with the
-   * instance’s previous set wrapper/replacement.
+   * Process (wrapping/replacing) the matched text
+   * with the previously defined wrapper and/or
+   * replacement.
    *
    * @return {Fibrio} The instance
    */
@@ -95,9 +96,9 @@ Object.assign( Finder.fn, {
       if ( startPortion && endPortion ) {
         let old = Object.assign( {}, current )
 
-        // Method `replaceMat` returns the end portion node,
+        // Method `.replaceMat()` returns the end portion node,
         // and then we continue the recursion from its next
-        // node.
+        // sibling.
         atIdx -= ( endPortion.node.data.length - endPortion.endIdxInNode )
 
         current = this.replaceMat(
@@ -124,8 +125,8 @@ Object.assign( Finder.fn, {
           {
             let cloned = Array.from( nodeStack )
 
-            cloned.shift() // Omit the root element
-            cloned.pop()   // Omit current text node’s parent element
+            cloned.shift() // Omit the root element.
+            cloned.pop()   // Omit current text node’s parent element.
 
             while ( $.contains( cloned.pop(), old )) {
               rerenderedLevel++
@@ -145,27 +146,27 @@ Object.assign( Finder.fn, {
           nodeStack = nodeStack.concat( update )
         }
 
-      // Move down
+      // Move down:
       } else if ( !doAvoidNode && current::first()) {
         nodeStack.push( current )
         current = current::first()
         continue
-      // Move forward
+      // Move forward:
       } else if ( !doAvoidNode && current::next()) {
         current = current::next()
         continue
       }
 
       while ( true ) {
-        // Move forward
+        // Move forward:
         if ( current::next()) {
           current = current::next()
           break
         }
-        // Move up (and move forward again)
+        // Move up (and move forward again):
         current = nodeStack.pop()
 
-        // Done with the assigned context from the Finder
+        // Done with the given context:
         if ( current === context )  break out
       }
     }
@@ -175,7 +176,7 @@ Object.assign( Finder.fn, {
   /**
    * Replace the matched text portion(s) with the configured
    * replacement (node/element) and return the endPortion
-   * node for `processMatch` to iterate.
+   * node for `.processMatch()` to iterate.
    *
    * @return {CheerioDOMObject}
    */
@@ -200,17 +201,17 @@ Object.assign( Finder.fn, {
       let idx = matElmt[0].children.indexOf( matNode )
       let replacement
 
-      // Grab the text before the match
+      // Grab the text before the match:
       if ( startPortion.idxInNode > 0 ) {
         preceding = data.substring( 0, startPortion.idxInNode )
       }
 
-      // Get the replacement
+      // Get the processed replacement:
       replacement = this.getPortionReplacementElmt(
         endPortion, mat
       )::html()
 
-      // Grab the text after the match
+      // Grab the text after the match:
       if ( endPortion.endIdxInNode < data.length ) {
         following = data.substring( endPortion.endIdxInNode )
       }
@@ -224,7 +225,7 @@ Object.assign( Finder.fn, {
         )
       )
 
-      // Return the new node
+      // Return the new node:
       return matElmt.contents()[ preceding ? idx+1 : idx ]
     } else {
       // matStartNode -> matInnerNode -> matEndNode
@@ -295,7 +296,7 @@ Object.assign( Finder.fn, {
       wrapper::prop( 'type' ) &&
       wrapper::prop( 'type' ) !== 'text'
     ) {
-      // Clone the element from its HTML
+      // Clone the element from its HTML:
       wrapper = $( $.html( wrapper ))
     }
 
@@ -310,7 +311,7 @@ Object.assign( Finder.fn, {
     }
 
     let elmt = typeof wrapper === 'string'
-    ? /^<([\w\-]+)\s?.*>.*<\/\1>$/gi.test( wrapper )
+    ? /^<([\w\-]+)\s?.*>.*<\/\1>$/gi.test( wrapper ) //// TODO: more accurate and strict.
       ? $( wrapper )
       : $( `<${wrapper}></${wrapper}>` )
     : wrapper
@@ -333,8 +334,8 @@ Object.assign( Finder.fn, {
   },
 
   /**
-   * Prepare the replacement text according to the given
-   * portion.
+   * Work on the replacement (if passed a string) according
+   * to the given portion and returned the processed one.
    *
    * @return {String}
    */
@@ -354,15 +355,23 @@ Object.assign( Finder.fn, {
         let replacement
 
         switch ( t ) {
+          // The entire match:
           case '&':
             replacement = mat[0]
             break
+
+          // Text preceding the match:
           case '`':
             replacement = mat.input.substring( 0, mat.startIdx )
             break
+
+          // Text following the match:
           case '\'':
             replacement = mat.input.substring( mat.endIdx )
             break
+
+          // `0`: The entire match; or,
+          // `n`: Captured groups (parenthesised submatches):
           default:
             replacement = mat[ +t ]
         }

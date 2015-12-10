@@ -4,13 +4,14 @@ import { type, first, next } from './fn/manipulate'
 
 Object.assign( Finder.fn, {
   /**
-   * Get the text aggregate of a node w/o resorting to
-   * `$node.text()`
+   * Get the text aggregation of a node w/o being
+   * normalized and resorting to `$node.text()`.
    *
-   * @param {Cheerio}
+   * @param {CheerioDOMObject}
    * @return {Array}
-   *   The entire text aggregation of the instance’s
-   *   context node w/o the avoided parts.
+   *   An array of the text aggregation of the given node,
+   *   divided by boundaries, w/o the content of the
+   *   ignored elements.
    */
   aggregate( node=this.context ) {
     // Found the text and return it.

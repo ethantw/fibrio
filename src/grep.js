@@ -4,10 +4,12 @@ import escapeReg from './fn/escapeReg'
 
 Object.assign( Finder.fn, {
   /**
-   * Gre(p) the matches with the text aggregation.
+   * Gre(p) using the text aggregation.
    *
+   * @param {Array}
+   *   Text aggragation.
    * @return {Array}
-   *   The matches within the instance’s context node
+   *   The matches and their metadata.
    */
   grep( aggr=this.text ) {
     const prepMat = this.prepMat
@@ -25,7 +27,7 @@ Object.assign( Finder.fn, {
         let text = aggr[ i ]
 
         if ( typeof text !== 'string' ) {
-          // Deal with nested contexts
+          // Deal with nested contexts:
           matchAggr( text )
           continue
         }
@@ -47,13 +49,18 @@ Object.assign( Finder.fn, {
   },
 
   /**
-   * Prepare the single match object with the its
-   * metadata.
+   * Prepare metadata for single match array (returned
+   * by `RegExp.fn.exec` or `String.fn.match`).
    *
-   * @return {Object} Match
+   * @param {Array}  Match
+   * @param {Number} Index of the match
+   * @param {Number} Offset of the match
+   *
+   * @return {Array}
+   *   The original match array with addtional metadata.
    */
   prepMat( mat, matIdx, offset ) {
-    if ( !mat[0] )  throw new Error( 'Fibrio cannot handle zero-length matches' )
+    if ( !mat[0] )  throw new Error( 'Fibrio cannot handle zero-length matches.' )
 
     mat.idx      = mat.index
     mat.startIdx = offset + mat.idx
