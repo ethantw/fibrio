@@ -5,22 +5,15 @@ const Fibrio = require( '..' )
 const $      = require( 'cheerio' )
 const assert = require( 'assert' )
 
-const desc = describe
-const eq   = assert.equal
+const desc   = describe
+const eq     = assert.equal
+const htmlEq = ( a, b ) => eq(nmlize( a ), nmlize( b ))
 
-const normalize = html => {
-  return html
-    .toLowerCase()
-    .replace( /[\r\n]/g, '' )
-    .replace( /([\s]{2,})/g, ' ' )
-    .replace( /=["']([^"'])["']/g, '=$1' )
-}
-
-const htmlEq = ( a, b ) => {
-  a = normalize( a )
-  b = normalize( b )
-  return eq( a, b )
-}
+const nmlize = html => html
+  .toLowerCase()
+  .replace( /[\r\n]/g, '' )
+  .replace( /([\s]{2,})/g, ' ' )
+  .replace( /=["']([^"'])["']/g, '=$1' )
 
 desc( 'Namespace', () => {
   it(
