@@ -374,7 +374,7 @@ Object.assign( Finder.fn, {
     if ( portion.isEnd ) {
       return string.substring( portion.idxInMat )
     }
-    return string.substring( portion.idxInMat, portion.idxInMat + portion.text.length )
+    return string.substr( portion.idxInMat, portion.text.length )
   },
 })
 
