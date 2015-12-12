@@ -31,27 +31,27 @@ gulp.task( 'watch', function() {
 })
 
 gulp.task( 'index.js', [ 'pack' ], function() {
-  gulp.src( './index.js' )
-  .pipe(concat( 'index.js', {
+  gulp.src( './dist/fibrio.js' )
+  .pipe(concat( 'fibrio.js', {
     process: function( src ) {
       return (
         banner + src
         .replace( /IMPORT/g, 'require' )
         .replace( /@VERSION/g, pkg.version ) + '\n' +
-        'function IMPORT( mod ) { return require( mod ) }\n' +
-        'function EXPORT_ONCE( mod ) { module.exports = mod }\n'
+        'function IMPORT( mod ) { return require( mod ) }\n'
       )
     }
   }))
-  .pipe(gulp.dest( './' ))
+  .pipe(gulp.dest( './dist' ))
 })
 
 gulp.task( 'pack', function( callback ) {
   webpack({
     entry: './src/index.js',
     output: {
-      path: __dirname,
-      filename: 'index.js'
+      path: './dist',
+      filename: 'fibrio.js',
+      libraryTarget: 'umd',
     },
     module: {
       loaders: [{
@@ -59,7 +59,11 @@ gulp.task( 'pack', function( callback ) {
         exclude: /(node_modules)/,
         loader: 'babel'
       }]
-    }
+    },
+    babel: {
+      loose: 'all',
+    },
+    devtool: '#source-map',
   }, function( error, stat ) {
     if ( error )  throw new util.PluginError( 'webpack', error )
     util.log( '[webpack]', stat.toString())

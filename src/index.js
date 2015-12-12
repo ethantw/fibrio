@@ -20,6 +20,3 @@ Fibrio.fibrio = Fibrio.version = Fibrio.fn.fibrio = Fibrio.fn.version = '@VERSIO
 // ES6 module:
 export default Fibrio
 
-// NPM (CommonJS) module:
-EXPORT_ONCE( Fibrio )
-
