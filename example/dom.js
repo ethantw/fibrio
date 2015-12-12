@@ -16,7 +16,7 @@ fs.readFile(
 
     jsdom.env(
       html,
-      [ url( 'findAndReplaceDOMText.js') ],
+      [ url( 'findAndReplaceDOMText.js' ) ],
       ( _, win ) => {
         const finder  = win.findAndReplaceDOMText
         const root    = win.document.documentElement
