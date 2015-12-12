@@ -283,7 +283,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _context;
 	
 	    if (!this.hasOwnProperty('avoid')) {
-	      this.avoid = new Set(Finder.preset.HTML5.NON_TEXT);
+	      this.avoid = new Set(this.avoid);
 	    }
 	
 	    (_context = this.avoid, _fnSetAct2['default']).call(_context, 'add', selector);
@@ -304,7 +304,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _context2;
 	
 	    if (!this.hasOwnProperty('avoid')) {
-	      this.avoid = new Set(Finder.preset.HTML5.NON_TEXT);
+	      this.avoid = new Set(this.avoid);
 	    }
 	
 	    if (typeof selector === 'undefined') {
@@ -331,7 +331,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _context3;
 	
 	    if (!this.hasOwnProperty('bdry')) {
-	      this.bdry = new Set(Finder.preset.HTML5.BDRY);
+	      this.bdry = new Set(this.bdry);
 	    }
 	
 	    (_context3 = this.bdry, _fnSetAct2['default']).call(_context3, 'add', selector);
@@ -352,7 +352,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _context4;
 	
 	    if (!this.hasOwnProperty('bdry')) {
-	      this.bdry = new Set(Finder.preset.HTML5.BDRY);
+	      this.bdry = new Set(this.bdry);
 	    }
 	
 	    if (typeof selector === 'undefined') {

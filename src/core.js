@@ -188,7 +188,7 @@ class Finder {
    */
   addAvoid( selector ) {
     if ( !this.hasOwnProperty( 'avoid' )) {
-      this.avoid = new Set( Finder.preset.HTML5.NON_TEXT )
+      this.avoid = new Set( this.avoid )
     }
 
     this.avoid::setAct( 'add', selector )
@@ -206,7 +206,7 @@ class Finder {
    */
   removeAvoid( selector ) {
     if ( !this.hasOwnProperty( 'avoid' )) {
-      this.avoid = new Set( Finder.preset.HTML5.NON_TEXT )
+      this.avoid = new Set( this.avoid )
     }
 
     if ( typeof selector === 'undefined' ) {
@@ -230,7 +230,7 @@ class Finder {
    */
   addBdry( selector ) {
     if ( !this.hasOwnProperty( 'bdry' )) {
-      this.bdry = new Set( Finder.preset.HTML5.BDRY )
+      this.bdry = new Set( this.bdry )
     }
 
     this.bdry::setAct( 'add', selector )
@@ -248,7 +248,7 @@ class Finder {
    */
   removeBdry( selector ) {
     if ( !this.hasOwnProperty( 'bdry' )) {
-      this.bdry = new Set( Finder.preset.HTML5.BDRY )
+      this.bdry = new Set( this.bdry )
     }
 
     if ( typeof selector === 'undefined' ) {
