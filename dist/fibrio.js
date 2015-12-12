@@ -472,12 +472,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (typeof this.root === 'undefined') {
 	      this.processMatch();
 	    } else {
-	      var i = this.context.length;
+	      var context = this.context;
+	      var i = context.length;
 	
 	      while (i--) {
-	        var context = this.context.eq(i);
-	        var match = this.match[i];
-	        this.processMatch({ context: context, match: match });
+	        this.processMatch({
+	          context: context.eq(i),
+	          match: this.grep(this.aggregate(context[i]))
+	        });
 	      }
 	    }
 	    this.newActionProcessed = true;
@@ -561,11 +563,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this.grep();
 	      }
 	
-	      var i = this.text.length;
+	      var i = this.context.length;
 	      var ret = [];
 	
 	      while (i--) {
-	        ret.unshift(this.grep(this.text[i]));
+	        ret.unshift(this.grep(this.aggregate(this.context[i])));
 	      }
 	      return ret;
 	    }

@@ -80,11 +80,13 @@ class Finder {
       return this.grep()
     }
 
-    let i   = this.text.length
-    let ret = []
+    let i    = this.context.length
+    let ret  = []
 
     while ( i-- ) {
-      ret.unshift( this.grep( this.text[ i ] ))
+      ret.unshift(
+        this.grep(this.aggregate( this.context[ i ] ))
+      )
     }
     return ret
   }
@@ -355,12 +357,14 @@ class Finder {
     if ( typeof this.root === 'undefined' ) {
       this.processMatch()
     } else {
-      let i = this.context.length
+      const context = this.context
+      let i = context.length
 
       while ( i-- ) {
-        const context = this.context.eq( i )
-        const match   = this.match[ i ]
-        this.processMatch({ context, match })
+        this.processMatch({
+          context: context.eq( i ),
+          match:   this.grep(this.aggregate( context[ i ] )),
+        })
       }
     }
     this.newActionProcessed = true
