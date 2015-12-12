@@ -20,17 +20,15 @@ fs.readFile(
       ( _, win ) => {
         const finder  = win.findAndReplaceDOMText
         const root    = win.document.documentElement
-        const body    = win.document.body
         const wrapper = win.document.createElement( 'u' )
         const control = root.outerHTML
 
         wrapper.classList.add( 'laughter' )
 
         let revertee = []
-        let div = body
 
-        Array.from(body.querySelectorAll( 'body > div' ))
-        .map( div => {
+        Array.from(root.querySelectorAll( 'body > div' ))
+        .forEach( div => {
           revertee.push(
             finder( div, {
               find:    /lo+l/gi,
@@ -50,7 +48,6 @@ fs.readFile(
               preset: 'prose',
             })
           )
-          return div
         })
 
         const end = Date.now()
