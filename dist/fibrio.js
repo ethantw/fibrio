@@ -1439,4 +1439,3 @@ return /******/ (function(modules) { // webpackBootstrap
 });
 ;
 //# sourceMappingURL=fibrio.js.map
-function IMPORT( mod ) { return require( mod ) }

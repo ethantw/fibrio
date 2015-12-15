@@ -8,7 +8,7 @@ const webpack = require( 'webpack' )
 const pkg     = require( './package.json' )
 const banner  = (
 `/*!
- * Fibrio v0.1.0
+ * Fibrio v${pkg.version}
  * Chen Yijun (@ethantw) | MIT License
  * https://github.com/ethantw/fibrio
  *
@@ -37,8 +37,7 @@ gulp.task( 'index.js', [ 'pack' ], function() {
       return (
         banner + src
         .replace( /IMPORT/g, 'require' )
-        .replace( /@VERSION/g, pkg.version ) + '\n' +
-        'function IMPORT( mod ) { return require( mod ) }\n'
+        .replace( /@VERSION/g, pkg.version )
       )
     }
   }))
