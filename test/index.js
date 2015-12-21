@@ -70,48 +70,6 @@ desc( 'Basics', () => {
     })
     htmlEq( fib.render(), '<a> <lol-em>(loooooooool)</lol-em>, <em><lol-em>(</lol-em></em><lol-em>lol)</lol-em>, <em><i><b><u><lol-em>(</lol-em></u></b></i><lol-em>loooo</lol-em></em><lol-em>ool)</lol-em>, <lol-em>(loo</lol-em><b><lol-em>o</lol-em><i><lol-em>oo</lol-em><u><lol-em>oo</lol-em></u></i><lol-em>ooooo</lol-em></b><lol-em>ool)</lol-em>, <lol-em>(loooo</lol-em><b><lol-em>ooooo</lol-em><i><lol-em>oooool)</lol-em></i>, <lol-em>(looo</lol-em><em><lol-em>ool)</lol-em></em></b>, <lol-em>(loooo</lol-em><strong><lol-em>ooo</lol-em></strong><i><lol-em>ooo</lol-em></i><lol-em>ol)</lol-em>, lollol, <lol-em>(lol)</lol-em>, loooollool, <lol-em>(looooooooooooooooooooool)</lol-em>!!!!!! </a>' )
   })
-
-  it( '.qsa() and .end()', () => {
-    const html = `
-    <root>
-      hello
-      <content>
-        <p>hello</p>
-        hello
-        <article>
-          <p>He<b>llo</b></p>
-        </article>
-      </content>
-      <p>hello</p>
-      <content>
-        hello
-        <p>hello</p>
-        <article>
-          <p>He<b>llo</b></p>
-        </article>
-      </content>
-    </root>
-    `
-    let fib  = Fibrio( html )
-      .qsa( 'root > content' )
-      .filter( 'p' )
-      .action({
-        find:    /hello/gi,
-        wrap:    'u',
-        replace: '[$&]',
-      })
-    htmlEq( fib.render(), ' <root> hello <content> <p><u>[hello]</u></p> hello <article> <p><u>[h</u><b><u>ello]</u></b></p> </article> </content> <p>hello</p> <content> hello <p><u>[hello]</u></p> <article> <p><u>[h</u><b><u>ello]</u></b></p> </article> </content> </root> ' )
-
-    fib
-      .end()
-      .action({
-        find:    /hello/gi,
-        wrap:    'i',
-        replace: '{$&}',
-      })
-
-    htmlEq( fib.render(), ' <root> <i>{hello}</i> <content> <p><u>[<i>{hello}</i>]</u></p> <i>{hello}</i> <article> <p><u>[<i>{</i></u><b><u><i>hello}</i>]</u></b></p> </article> </content> <p><i>{hello}</i></p> <content> <i>{hello}</i> <p><u>[<i>{hello}</i>]</u></p> <article> <p><u>[<i>{</i></u><b><u><i>hello}</i>]</u></b></p> </article> </content> </root> ' )
-  })
 })
 
 desc( 'Finding', () => {
@@ -374,6 +332,48 @@ desc( 'Filtering', () => {
     .removeAvoid( 'a.ignore' )
     .wrap( 'x-span' )
     htmlEq( fib.html, '{<x-span>foo</x-span>} <a class="ignore"><x-span>foo</x-span></a> {f<a class="ignore">o</a>oo} {f<a class="ignore">fo</a>oo} <a class="ignore">fo</a>{<x-span>foo</x-span>}' )
+  })
+
+  it( '.qsa() and .end()', () => {
+    const html = `
+    <root>
+      hello
+      <content>
+        <p>hello</p>
+        hello
+        <article>
+          <p>He<b>llo</b></p>
+        </article>
+      </content>
+      <p>hello</p>
+      <content>
+        hello
+        <p>hello</p>
+        <article>
+          <p>He<b>llo</b></p>
+        </article>
+      </content>
+    </root>
+    `
+    let fib  = Fibrio( html )
+      .qsa( 'root > content' )
+      .filter( 'p' )
+      .action({
+        find:    /hello/gi,
+        wrap:    'u',
+        replace: '[$&]',
+      })
+    htmlEq( fib.render(), ' <root> hello <content> <p><u>[hello]</u></p> hello <article> <p><u>[h</u><b><u>ello]</u></b></p> </article> </content> <p>hello</p> <content> hello <p><u>[hello]</u></p> <article> <p><u>[h</u><b><u>ello]</u></b></p> </article> </content> </root> ' )
+
+    fib
+      .end()
+      .action({
+        find:    /hello/gi,
+        wrap:    'i',
+        replace: '{$&}',
+      })
+
+    htmlEq( fib.render(), ' <root> <i>{hello}</i> <content> <p><u>[<i>{hello}</i>]</u></p> <i>{hello}</i> <article> <p><u>[<i>{</i></u><b><u><i>hello}</i>]</u></b></p> </article> </content> <p><i>{hello}</i></p> <content> <i>{hello}</i> <p><u>[<i>{hello}</i>]</u></p> <article> <p><u>[<i>{</i></u><b><u><i>hello}</i>]</u></b></p> </article> </content> </root> ' )
   })
 })
 
