@@ -57,7 +57,7 @@ class Finder {
    *
    */
   get text() {
-    if ( typeof this.root === 'undefined' ) {
+    if ( !this.root ) {
       return this.aggregate()
     }
 
@@ -76,7 +76,7 @@ class Finder {
    *
    */
   get match() {
-    if ( typeof this.root === 'undefined' ) {
+    if ( !this.root ) {
       return this.grep()
     }
 
@@ -116,6 +116,19 @@ class Finder {
       this.root = this.context
     }
     this.context = this.context.find( selector )
+    return this
+  }
+
+  /**
+   * End all filtering operations and use the root
+   * element as the effected context for the next
+   * text-processing action.
+   */
+  end() {
+    if ( this.root ) {
+      this.context = this.root
+      this.root    = null
+    }
     return this
   }
 
@@ -342,7 +355,7 @@ class Finder {
     if ( this.newActionProcessed === true )  return this
 
     {
-      const cloned = typeof this.root !== 'undefined'
+      const cloned = this.root
         ? this.root.clone()
         : null
       this.phase.push({
@@ -354,7 +367,7 @@ class Finder {
       })
     }
 
-    if ( typeof this.root === 'undefined' ) {
+    if ( !this.root ) {
       this.processMatch()
     } else {
       const context = this.context
