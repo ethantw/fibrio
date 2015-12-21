@@ -4,6 +4,7 @@ const util    = require( 'gulp-util' )
 const concat  = require( 'gulp-concat-util' )
 const server  = require( 'gulp-connect' ).server
 const webpack = require( 'webpack' )
+const mocha   = require( 'gulp-mocha' )
 
 const pkg     = require( './package.json' )
 const banner  = (
@@ -19,7 +20,7 @@ const banner  = (
 
 // Unified tasks
 gulp.task( 'default', [ 'build' ])
-gulp.task( 'build',   [ 'index.js' ])
+gulp.task( 'build',   [ 'index.js', 'test' ])
 gulp.task( 'dev',     [ 'default', 'server', 'watch' ])
 
 gulp.task( 'server', function() {
@@ -28,10 +29,16 @@ gulp.task( 'server', function() {
 
 gulp.task( 'watch', function() {
   gulp.watch( './src/**/*.js', [ 'index.js' ])
+  gulp.watch( './test/**/*.js', [ 'test' ])
+})
+
+gulp.task( 'test', [ 'index.js' ], () => {
+  return gulp.src( './test/index.js', { read: false })
+  .pipe(mocha())
 })
 
 gulp.task( 'index.js', [ 'pack' ], function() {
-  gulp.src( './dist/fibrio.js' )
+  return gulp.src( './dist/fibrio.js' )
   .pipe(concat( 'fibrio.js', {
     process: function( src ) {
       return (
