@@ -1,12 +1,10 @@
 
+import $         from 'cheerio'
 import escapeReg from './fn/escapeReg'
 import root      from './fn/root'
 import { prop }  from './fn/manipulate'
 import setAct    from './fn/setAct'
 import revertTo  from './fn/revertTo'
-
-// NPM modules:
-const $ = IMPORT( 'cheerio' )
 
 class Finder {
   /**

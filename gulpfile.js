@@ -42,8 +42,7 @@ gulp.task( 'index.js', [ 'pack' ], function() {
   .pipe(concat( 'fibrio.js', {
     process: function( src ) {
       return (
-        banner + src
-        .replace( /IMPORT/g, 'require' )
+        ( banner + src )
         .replace( /@VERSION/g, pkg.version )
       )
     }
@@ -66,6 +65,7 @@ gulp.task( 'pack', function( callback ) {
         loader: 'babel'
       }]
     },
+    externals: [ /^[a-z\-0-9]+$/ ],
     babel: {
       loose: 'all',
     },

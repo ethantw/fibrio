@@ -1,4 +1,5 @@
 
+import $      from 'cheerio'
 import Finder from './core'
 import {
   prop, content, type, html,
@@ -6,8 +7,6 @@ import {
   before, replaceWith,
   createText,
 } from './fn/manipulate'
-
-const $ = IMPORT( 'cheerio' )
 
 Object.assign( Finder.fn, {
   /**

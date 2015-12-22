@@ -1,5 +1,5 @@
 
-const $ = IMPORT( 'cheerio' )
+import $ from 'cheerio'
 
 let mani = {
 

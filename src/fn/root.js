@@ -1,6 +1,4 @@
 
-const $    = IMPORT( 'cheerio' )
-const root = html => $( `<fibrio-root>${html}</fibrio-root>` )
-
-export default root
+import $ from 'cheerio'
+export default html => $( `<fibrio-root>${html}</fibrio-root>` )
 

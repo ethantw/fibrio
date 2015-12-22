@@ -1,6 +1,6 @@
 
-const normalize = IMPORT( 'normalize-selector' )
-const split     = IMPORT( 'split-css-selector' )
+import normalize from 'normalize-selector'
+import split     from 'split-css-selector'
 
 /**
  * Add or delete elements of a set using CSS selectors.
