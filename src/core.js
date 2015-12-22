@@ -51,6 +51,14 @@ class Finder {
     return false
   }
 
+  static html( node ) {
+    return (
+      $
+      .html( node )
+      .replace( /<\/?fibrio\-(root|text)>/gi, '' )
+    )
+  }
+
   /**
    * Return an array of the text aggregation
    * of the root element.
@@ -97,8 +105,7 @@ class Finder {
    *
    */
   get html() {
-    return ( this.root || this.context ).html()
-      .replace( /<\/?fibrio\-text>/gi, '' )
+    return Finder.html( this.root || this.context )
   }
 
   /**
