@@ -4,16 +4,27 @@
 const Fibrio = require( '..' )
 const $      = require( 'cheerio' )
 const assert = require( 'assert' )
+const Ent    = require( 'special-entities' )
 
 const desc   = describe
 const eq     = assert.equal
+const enteq  = ( a, b ) => assert.equal(hexi( a ), hexi( b ))
+const hexi   = v => Ent.normalizeXML( v, 'utf-8' )
 const htmlEq = ( a, b ) => eq(nmlize( a ), nmlize( b ))
-
-const nmlize = html => html
+const nmlize = html => hexi( html )
   .toLowerCase()
   .replace( /[\r\n]/g, '' )
   .replace( /([\s]{2,})/g, ' ' )
   .replace( /=["']([^"'])["']/g, '=$1' )
+
+
+const h = {
+  base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD800-\uDBFF][\uDC00-\uDFFF]',
+  desc:    '[\u2FF0-\u2FFA]',
+  radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]',
+  kana:    '[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]|\uD82C[\uDC00-\uDC01][\u3099-\u309C]?',
+}
+const rcjk = new RegExp( `(${h.base}|${h.desc}|${h.radical}|${h.kana})`, 'gi' )
 
 desc( 'Namespace', () => {
   it(
@@ -214,25 +225,49 @@ desc( 'Finding', () => {
   })
 })
 
-desc( 'Replacement (With nodes)', () => {
-  it( 'StencilNode definition', () => {
-    let fib = Fibrio( 'test test' )
-      .wrap( /test/gi, 'div' )
-    htmlEq( fib.html, '<div>test</div> <div>test</div>' )
+desc( 'Unicode support', () => {
+  it( 'Non-ASCII (BMP)', () => {
+    const wrapper = i => $( `<x>${i}</x>` )
+    let i = 0
+    let fib = Fibrio( `我的「朋友」` )
+      .action({
+        find:   /[我的朋友]/gi,
+        replace: _ => wrapper( ++i ),
+      })
+      .process()
+      htmlEq( fib.html, '<x>1</x><x>2</x>「<x>3</x><x>4</x>」' )
+    })
 
-    fib
-    .revert()
-    .replace(
-      /test/gi,
-      portion => $( `<x class='f'>(${ portion.text })</x>` )
-    )
-    htmlEq( fib.html, '<x class="f">(test)</x> <x class="f">(test)</x>' )
+    it( 'Non-ASCII (non-BMP)', () => {
+      let i = 0
+      let fib = Fibrio( `𫞵𫞦𠁻𠁶〇⼌⿕⺃⻍⻰⻳⿸⿷⿳` )
+      fib
+        .wrap( rcjk, 'x' )
+        .replace( rcjk, _ => `[${++i}]` )
+      eq( fib.context.find( 'x' ).last().text(), '[14]' )
+      eq( fib.context.find( 'x' ).length, 14 )
+    })
+  })
 
-    fib
-    .revert()
-    .action({})
-    .wrap( /test/gi, $( '<z></z>' ))
-    htmlEq( fib.html, '<z>test</z> <z>test</z>' )
+  desc( 'Replacement (With nodes)', () => {
+    it( 'StencilNode definition', () => {
+      let fib = Fibrio( 'test test' )
+        .wrap( /test/gi, 'div' )
+      htmlEq( fib.html, '<div>test</div> <div>test</div>' )
+
+      fib
+      .revert()
+      .replace(
+        /test/gi,
+        portion => $( `<x class='f'>(${ portion.text })</x>` )
+      )
+      htmlEq( fib.html, '<x class="f">(test)</x> <x class="f">(test)</x>' )
+
+      fib
+      .revert()
+      .action({})
+      .wrap( /test/gi, $( '<z></z>' ))
+      htmlEq( fib.html, '<z>test</z> <z>test</z>' )
   })
 
   // Not possible within Cheerio
