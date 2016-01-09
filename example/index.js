@@ -15,7 +15,9 @@ fs.readFile(
   ( err, html ) => {
     let fib = Fibrio( html )
 
+
     fib
+    .replace( /(A)(B)/gi, '$1 $2' )
     .qsa( 'body > div' )
     .action({
       find:    /lo+l/gi,

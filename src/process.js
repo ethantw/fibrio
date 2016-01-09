@@ -117,7 +117,7 @@ Object.assign( Finder.fn, {
         // We have to update `nodeStack` once the current
         // element is re-rendered from its parental side via
         // `$parent.html( newHTML )` method.
-        if ( current.rerendered && !current::next()) {
+        if ( current.rerendered ) {
           // The `rerenderedLevel` variable here is to
           // indicate how many level we have to go back.
           let rerenderedLevel = 1
@@ -275,7 +275,7 @@ Object.assign( Finder.fn, {
         .find( '[data-fibrio-mat-elmt="last"]' )
         .removeAttr( 'data-fibrio-mat-elmt' )[0]
 
-      if ( !ret::next())  ret.rerendered = true
+      ret.rerendered = true
       return ret
     }
   },

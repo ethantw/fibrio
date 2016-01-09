@@ -194,6 +194,14 @@ desc( 'Finding', () => {
     htmlEq( fib.render(), '<a class=c>foo</a><b>bar</b> <b><x>foo</x></b><a><x>bar</x></a>' )
   })
 
+  it ( 'ABBA', () => {
+    let html = `A<i>BB</i>A, A<code>BB</code>A, <code>BB</code>A, ABBA.`
+    let fib = Fibrio( html )
+      .replace( /(A)(B)/gi, '$1 $2' )
+      .replace( /(B)(A)/gi, '$1 $2' )
+    htmlEq( fib.html, 'a<i> bb</i> a, a<code> bb</code> a, <code>bb</code> a, a bb a.' )
+  })
+
   it( 'Preset context boundaries', () => {
     let fib = Fibrio( '<p>Some</p>Thing<em>Some<span>Thing</span></em><div>Some</div>Thing' )
       .wrap( /something/gi, 'x' )
