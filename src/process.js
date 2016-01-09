@@ -87,7 +87,7 @@ Object.assign( Finder.fn, {
       }
 
       doAvoidNode = (
-        /^(tag|style|script)$/i.test( current::type()) &&
+        /^(tag|style|script)$/i.test(current::type()) &&
         this.filterFn &&
         !this.filterFn( current )
       )
@@ -300,7 +300,7 @@ Object.assign( Finder.fn, {
       wrapper::prop( 'type' ) !== 'text'
     ) {
       // Clone the element from its HTML:
-      wrapper = $( $.html( wrapper ))
+      wrapper = $($.html( wrapper ))
     }
 
     if ( typeof replacement === 'function' ) {
@@ -325,7 +325,7 @@ Object.assign( Finder.fn, {
       )
     )
 
-    if ( !replacement::first()::prop( 'data' )) {
+    if (!replacement::first()::prop( 'data' )) {
       return replacement
     }
     if ( !elmt ) {

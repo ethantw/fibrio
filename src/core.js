@@ -71,7 +71,7 @@ class Finder {
     let ret = []
 
     while ( i-- ) {
-      ret.unshift( this.aggregate( this.context[ i ] ))
+      ret.unshift(this.aggregate( this.context[ i ] ))
     }
     return ret
   }
@@ -165,7 +165,7 @@ class Finder {
    */
   filterFn( node ) {
     const avoid = this.avoid || new Set()
-    if ( avoid.has( node::prop( 'name' )))  return false
+    if (avoid.has( node::prop( 'name' )))  return false
 
     const selector = Array.from( avoid )
       .filter( s => !/^[\w\-]+$/i.test( s ))
@@ -187,8 +187,8 @@ class Finder {
    */
   bdryFn( node ) {
     const bdry = this.bdry || new Set()
-    if ( bdry.has( '*' ))                  return true
-    if ( bdry.has( node::prop( 'name' )))  return true
+    if (bdry.has( '*' ))                  return true
+    if (bdry.has( node::prop( 'name' )))  return true
 
     const selector = Array.from( bdry )
       .filter( s => !/^[\w\-]+$/i.test( s ))
@@ -306,9 +306,9 @@ class Finder {
    *   The instance or the matches (array) depends on
    *   the second @param, `returnMatch`
    */
-  find( regex, returnMatch=false ) {
+  find( regex, returningMatch=false ) {
     this.pattern = regex
-    return returnMatch === true ? this.match : this
+    return returningMatch === true ? this.match : this
   }
 
   /**
@@ -436,7 +436,7 @@ class Finder {
       return this
     }
 
-    this::revertTo( this.phase.splice( length - level, length )[0] )
+    this::revertTo(this.phase.splice( length - level, length )[0] )
     return this
   }
 }
