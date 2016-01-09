@@ -1,5 +1,5 @@
 /*!
- * Fibrio v0.1.0
+ * Fibrio v0.1.1
  * Chen Yijun (@ethantw) | MIT License
  * https://github.com/ethantw/fibrio
  *
@@ -9,14 +9,14 @@
 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
+		module.exports = factory(require("cheerio"), require("normalize-selector"), require("split-css-selector"));
 	else if(typeof define === 'function' && define.amd)
-		define([], factory);
+		define(["cheerio", "normalize-selector", "split-css-selector"], factory);
 	else {
-		var a = factory();
+		var a = typeof exports === 'object' ? factory(require("cheerio"), require("normalize-selector"), require("split-css-selector")) : factory(root["cheerio"], root["normalize-selector"], root["split-css-selector"]);
 		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
 	}
-})(this, function() {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_7__, __WEBPACK_EXTERNAL_MODULE_8__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -74,15 +74,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _core2 = _interopRequireDefault(_core);
 	
-	__webpack_require__(7);
-	
-	__webpack_require__(8);
-	
-	__webpack_require__(9);
-	
 	__webpack_require__(10);
 	
 	__webpack_require__(11);
+	
+	__webpack_require__(12);
+	
+	__webpack_require__(13);
+	
+	__webpack_require__(14);
 	
 	var Fibrio = function Fibrio() {
 	  for (var _len = arguments.length, arg = Array(_len), _key = 0; _key < _len; _key++) {
@@ -99,7 +99,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  matches: _core2['default'].matches
 	});
 	
-	Fibrio.fibrio = Fibrio.version = Fibrio.fn.fibrio = Fibrio.fn.version = '0.1.0';
+	Fibrio.fibrio = Fibrio.version = Fibrio.fn.fibrio = Fibrio.fn.version = '0.1.1';
 	
 	// ES6 module:
 	exports['default'] = Fibrio;
@@ -119,26 +119,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _fnEscapeReg = __webpack_require__(2);
+	var _cheerio = __webpack_require__(2);
+	
+	var _cheerio2 = _interopRequireDefault(_cheerio);
+	
+	var _fnEscapeReg = __webpack_require__(3);
 	
 	var _fnEscapeReg2 = _interopRequireDefault(_fnEscapeReg);
 	
-	var _fnRoot = __webpack_require__(3);
+	var _fnRoot = __webpack_require__(4);
 	
 	var _fnRoot2 = _interopRequireDefault(_fnRoot);
 	
-	var _fnManipulate = __webpack_require__(4);
+	var _fnManipulate = __webpack_require__(5);
 	
-	var _fnSetAct = __webpack_require__(5);
+	var _fnSetAct = __webpack_require__(6);
 	
 	var _fnSetAct2 = _interopRequireDefault(_fnSetAct);
 	
-	var _fnRevertTo = __webpack_require__(6);
+	var _fnRevertTo = __webpack_require__(9);
 	
 	var _fnRevertTo2 = _interopRequireDefault(_fnRevertTo);
-	
-	// NPM modules:
-	var $ = require('cheerio');
 	
 	var Finder = (function () {
 	  /**
@@ -177,12 +178,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	
 	  Finder.matches = function matches(elmt, selector) {
-	    elmt = $(elmt);
+	    elmt = _cheerio2['default'](elmt);
 	
 	    if (typeof elmt === 'object' && elmt.is && typeof elmt.is === 'function') {
 	      return elmt.is(selector);
 	    }
 	    return false;
+	  };
+	
+	  Finder.html = function html(node) {
+	    return _cheerio2['default'].html(node).replace(/<\/?fibrio\-(root|text)>/gi, '');
 	  };
 	
 	  /**
@@ -207,6 +212,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.root = this.context;
 	    }
 	    this.context = this.context.find(selector);
+	    return this;
+	  };
+	
+	  /**
+	   * End all filtering operations and use the root
+	   * element as the effected context for the next
+	   * text-processing action.
+	   */
+	
+	  Finder.prototype.end = function end() {
+	    if (this.root) {
+	      this.context = this.root;
+	      this.root = null;
+	    }
 	    return this;
 	  };
 	
@@ -395,10 +414,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	
 	  Finder.prototype.find = function find(regex) {
-	    var returnMatch = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+	    var returningMatch = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 	
 	    this.pattern = regex;
-	    return returnMatch === true ? this.match : this;
+	    return returningMatch === true ? this.match : this;
 	  };
 	
 	  /**
@@ -461,7 +480,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.newActionProcessed === true) return this;
 	
 	    {
-	      var cloned = typeof this.root !== 'undefined' ? this.root.clone() : null;
+	      var cloned = this.root ? this.root.clone() : null;
 	      this.phase.push({
 	        html: this.html,
 	        root: cloned,
@@ -469,7 +488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	    }
 	
-	    if (typeof this.root === 'undefined') {
+	    if (!this.root) {
 	      this.processMatch();
 	    } else {
 	      var context = this.context;
@@ -538,7 +557,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(Finder, [{
 	    key: 'text',
 	    get: function get() {
-	      if (typeof this.root === 'undefined') {
+	      if (!this.root) {
 	        return this.aggregate();
 	      }
 	
@@ -559,7 +578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'match',
 	    get: function get() {
-	      if (typeof this.root === 'undefined') {
+	      if (!this.root) {
 	        return this.grep();
 	      }
 	
@@ -580,14 +599,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'html',
 	    get: function get() {
-	      return (this.root || this.context).html().replace(/<\/?fibrio\-text>/gi, '');
+	      return Finder.html(this.root || this.context);
 	    }
 	  }]);
 	
 	  return Finder;
 	})();
 	
-	Finder.version = '0.1.0';
+	Finder.version = '0.1.1';
 	Finder.fn = Finder.prototype;
 	
 	Finder.fn.filter = Finder.fn.query = Finder.fn.$ = Finder.fn.qsa;
@@ -597,6 +616,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 2 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
+
+/***/ },
+/* 3 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -611,30 +636,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 3 */
-/***/ function(module, exports) {
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	exports.__esModule = true;
 	
-	var $ = require('cheerio');
-	var root = function root(html) {
-	  return $('<fibrio-root>' + html + '</fibrio-root>');
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _cheerio = __webpack_require__(2);
+	
+	var _cheerio2 = _interopRequireDefault(_cheerio);
+	
+	exports['default'] = function (html) {
+	  return _cheerio2['default']('<fibrio-root>' + html + '</fibrio-root>');
 	};
 	
-	exports['default'] = root;
 	module.exports = exports['default'];
 
 /***/ },
-/* 4 */
-/***/ function(module, exports) {
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	exports.__esModule = true;
 	
-	var $ = require('cheerio');
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _cheerio = __webpack_require__(2);
+	
+	var _cheerio2 = _interopRequireDefault(_cheerio);
 	
 	var mani = {
 	
@@ -674,7 +707,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return mani.prop.call(this, 'parent');
 	  },
 	  html: function html() {
-	    return $.html(this);
+	    return _cheerio2['default'].html(this);
 	  },
 	
 	  empty: function empty() {
@@ -694,7 +727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	
 	  before: function before(content) {
-	    content = typeof content === 'string' ? $(content) : content;
+	    content = typeof content === 'string' ? _cheerio2['default'](content) : content;
 	
 	    if (typeof this !== 'object') {
 	      return;
@@ -711,9 +744,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var idxBefore = parent.children.indexOf(this);
 	    var idxAfter = idxBefore + content.contents().length;
 	
-	    mani.replaceWith.call(this, '<fibrio-fake>' + ($.html(content) + $.html(this)) + '</fibrio-fake>');
+	    mani.replaceWith.call(this, '<fibrio-fake>' + (_cheerio2['default'].html(content) + _cheerio2['default'].html(this)) + '</fibrio-fake>');
 	
-	    parent.children = Array.from($($.html(parent).replace(/<\/?fibrio\-fake>/gi, '')).contents());
+	    parent.children = Array.from(_cheerio2['default'](_cheerio2['default'].html(parent).replace(/<\/?fibrio\-fake>/gi, '')).contents());
 	
 	    return parent.children[idxAfter];
 	  },
@@ -757,7 +790,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    var sib = parent.children;
 	    var idx = sib.indexOf(this);
-	    var newNode = typeof content === 'string' ? $(content) : content;
+	    var newNode = typeof content === 'string' ? _cheerio2['default'](content) : content;
 	
 	    if (idx < 0) return;
 	    if (!newNode.type && newNode[0]) newNode = newNode[0];
@@ -767,7 +800,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	
 	  createText: function createText(text) {
-	    return $('<fibrio-text>' + text + '</fibrio-text>');
+	    return _cheerio2['default']('<fibrio-text>' + text + '</fibrio-text>');
 	  }
 	};
 	
@@ -775,15 +808,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 5 */
-/***/ function(module, exports) {
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	exports.__esModule = true;
 	
-	var normalize = require('normalize-selector');
-	var split = require('split-css-selector');
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _normalizeSelector = __webpack_require__(7);
+	
+	var _normalizeSelector2 = _interopRequireDefault(_normalizeSelector);
+	
+	var _splitCssSelector = __webpack_require__(8);
+	
+	var _splitCssSelector2 = _interopRequireDefault(_splitCssSelector);
 	
 	/**
 	 * Add or delete elements of a set using CSS selectors.
@@ -806,11 +846,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  action = action.toLowerCase();
 	
 	  if (typeof selector === 'string') {
-	    selector = split(selector);
+	    selector = _splitCssSelector2['default'](selector);
 	  }
 	  if (selector && Array.isArray(selector)) {
 	    selector.forEach(function (sel) {
-	      return _this[action](normalize(sel));
+	      return _this[action](_normalizeSelector2['default'](sel));
 	    });
 	  }
 	  return this;
@@ -819,7 +859,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 6 */
+/* 7 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_7__;
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_8__;
+
+/***/ },
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -828,7 +880,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _root = __webpack_require__(3);
+	var _root = __webpack_require__(4);
 	
 	var _root2 = _interopRequireDefault(_root);
 	
@@ -844,7 +896,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 7 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -893,7 +945,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 8 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -912,7 +964,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -923,7 +975,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _core2 = _interopRequireDefault(_core);
 	
-	var _fnManipulate = __webpack_require__(4);
+	var _fnManipulate = __webpack_require__(5);
 	
 	Object.assign(_core2['default'].fn, {
 	  /**
@@ -978,7 +1030,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -989,7 +1041,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _core2 = _interopRequireDefault(_core);
 	
-	var _fnEscapeReg = __webpack_require__(2);
+	var _fnEscapeReg = __webpack_require__(3);
 	
 	var _fnEscapeReg2 = _interopRequireDefault(_fnEscapeReg);
 	
@@ -1063,20 +1115,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
+	var _cheerio = __webpack_require__(2);
+	
+	var _cheerio2 = _interopRequireDefault(_cheerio);
+	
 	var _core = __webpack_require__(1);
 	
 	var _core2 = _interopRequireDefault(_core);
 	
-	var _fnManipulate = __webpack_require__(4);
-	
-	var $ = require('cheerio');
+	var _fnManipulate = __webpack_require__(5);
 	
 	Object.assign(_core2['default'].fn, {
 	  /**
@@ -1108,7 +1162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var nodeStack = [context];
 	    var doAvoidNode = undefined;
 	
-	    out: while (true) {
+	    traverse: while (true) {
 	      var _context;
 	
 	      if ((_context = current, _fnManipulate.type).call(_context) === 'text') {
@@ -1157,8 +1211,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      doAvoidNode = /^(tag|style|script)$/i.test((_context = current, _fnManipulate.type).call(_context)) && this.filterFn && !this.filterFn(current);
 	
 	      if (startPortion && endPortion) {
-	        var _context2;
-	
 	        var old = Object.assign({}, current);
 	
 	        // Method `.replaceMat()` returns the end portion node,
@@ -1181,7 +1233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // We have to update `nodeStack` once the current
 	        // element is re-rendered from its parental side via
 	        // `$parent.html( newHTML )` method.
-	        if (current.rerendered && !(_context2 = current, _fnManipulate.next).call(_context2)) {
+	        if (current.rerendered) {
 	          // The `rerenderedLevel` variable here is to
 	          // indicate how many level we have to go back.
 	          var rerenderedLevel = 1;
@@ -1191,7 +1243,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            cloned.shift(); // Omit the root element.
 	            cloned.pop(); // Omit current text node’s parent element.
 	
-	            while ($.contains(cloned.pop(), old)) {
+	            while (_cheerio2['default'].contains(cloned.pop(), old)) {
 	              rerenderedLevel++;
 	            }
 	          }
@@ -1211,34 +1263,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        // Move down:
 	      } else if (!doAvoidNode && (_context = current, _fnManipulate.first).call(_context)) {
-	          var _context3;
+	          var _context2;
 	
 	          nodeStack.push(current);
-	          current = (_context3 = current, _fnManipulate.first).call(_context3);
-	          continue;
+	          current = (_context2 = current, _fnManipulate.first).call(_context2);
+	          continue traverse;
 	          // Move forward:
 	        } else if (!doAvoidNode && (_context = current, _fnManipulate.next).call(_context)) {
-	            var _context4;
+	            var _context3;
 	
-	            current = (_context4 = current, _fnManipulate.next).call(_context4);
-	            continue;
+	            current = (_context3 = current, _fnManipulate.next).call(_context3);
+	            continue traverse;
 	          }
 	
-	      while (true) {
-	        var _context5;
+	      // Move forward to the next node or finish
+	      // the traversing.
+	      moveForward: while (true) {
+	        var _context4;
 	
 	        // Move forward:
-	        if ((_context5 = current, _fnManipulate.next).call(_context5)) {
-	          var _context6;
+	        if ((_context4 = current, _fnManipulate.next).call(_context4)) {
+	          var _context5;
 	
-	          current = (_context6 = current, _fnManipulate.next).call(_context6);
-	          break;
+	          current = (_context5 = current, _fnManipulate.next).call(_context5);
+	          break moveForward;
 	        }
 	        // Move up (and move forward again):
 	        current = nodeStack.pop();
 	
 	        // Done with the given context:
-	        if (current === context) break out;
+	        if (current === context) {
+	          break traverse;
+	        }
 	      }
 	    }
 	    return this;
@@ -1262,7 +1318,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var label = ['{{fibrio-replacement: ' + Date.now() + '}}', '{{fibrio-replacement: ' + Date.now() + '}}[[end]]'];
 	
 	    if (matStartNode === matEndNode) {
-	      var _context7;
+	      var _context6;
 	
 	      var matNode = matStartNode;
 	      var data = matNode.data;
@@ -1279,7 +1335,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	
 	      // Get the processed replacement:
-	      replacement = (_context7 = this.getPortionReplacementElmt(endPortion, mat), _fnManipulate.html).call(_context7);
+	      replacement = (_context6 = this.getPortionReplacementElmt(endPortion, mat), _fnManipulate.html).call(_context6);
 	
 	      // Grab the text after the match:
 	      if (endPortion.endIdxInNode < data.length) {
@@ -1293,9 +1349,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Return the new node:
 	      return matElmt.contents()[preceding ? idx + 1 : idx];
 	    } else {
-	      var _context8;
+	      var _context7;
 	
-	      var _context9;
+	      var _context8;
 	
 	      var _ret = (function () {
 	        // matStartNode -> matInnerNode -> matEndNode
@@ -1310,14 +1366,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        preceding = matStartNode.data.substring(0, startPortion.idxInNode);
 	        following = matEndNode.data.substring(endPortion.endIdxInNode);
 	
-	        var first = (_context8 = _this.getPortionReplacementElmt(startPortion, mat), _fnManipulate.html).call(_context8);
+	        var first = (_context7 = _this.getPortionReplacementElmt(startPortion, mat), _fnManipulate.html).call(_context7);
 	
 	        for (var i = 0, l = innerPortion.length; i < l; ++i) {
 	          var portion = innerPortion[i];
-	          (_context9 = portion.node, _fnManipulate.replaceWith).call(_context9, _this.getPortionReplacementElmt(portion, mat));
+	          (_context8 = portion.node, _fnManipulate.replaceWith).call(_context8, _this.getPortionReplacementElmt(portion, mat));
 	        }
 	
-	        var last = (_context8 = _this.getPortionReplacementElmt(endPortion, mat).attr('data-fibrio-mat-elmt', 'last'), _fnManipulate.html).call(_context8);
+	        var last = (_context7 = _this.getPortionReplacementElmt(endPortion, mat).attr('data-fibrio-mat-elmt', 'last'), _fnManipulate.html).call(_context7);
 	
 	        matStartNode.data = label[0];
 	        matEndNode.data = label[1];
@@ -1331,7 +1387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        var ret = (areNotEqual ? matEndElmt : matStartElmt).find('[data-fibrio-mat-elmt="last"]').removeAttr('data-fibrio-mat-elmt')[0];
 	
-	        if (!_fnManipulate.next.call(ret)) ret.rerendered = true;
+	        ret.rerendered = true;
 	        return {
 	          v: ret
 	        };
@@ -1348,22 +1404,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {CheerioDOMNode}
 	   */
 	  getPortionReplacementElmt: function getPortionReplacementElmt(portion, mat, matIdx) {
-	    var _context10;
+	    var _context9;
 	
 	    var replacement = this.replacement || '$&';
 	    var wrapper = this.wrapper;
 	
-	    if (wrapper && (_context10 = wrapper, _fnManipulate.prop).call(_context10, 'type') && (_context10 = wrapper, _fnManipulate.prop).call(_context10, 'type') !== 'text') {
+	    if (wrapper && (_context9 = wrapper, _fnManipulate.prop).call(_context9, 'type') && (_context9 = wrapper, _fnManipulate.prop).call(_context9, 'type') !== 'text') {
 	      // Clone the element from its HTML:
-	      wrapper = $($.html(wrapper));
+	      wrapper = _cheerio2['default'](_cheerio2['default'].html(wrapper));
 	    }
 	
 	    if (typeof replacement === 'function') {
-	      var _context11;
+	      var _context10;
 	
 	      replacement = replacement(portion, mat, matIdx);
 	
-	      if (replacement && (_context11 = replacement, _fnManipulate.prop).call(_context11, 'type')) {
+	      if (replacement && (_context10 = replacement, _fnManipulate.prop).call(_context10, 'type')) {
 	        return replacement;
 	      }
 	
@@ -1371,11 +1427,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    var elmt = typeof wrapper === 'string' ? /^<([\w\-]+)\s?.*>.*<\/\1>$/gi.test(wrapper) //// TODO: more accurate and strict.
-	    ? $(wrapper) : $('<' + wrapper + '></' + wrapper + '>') : wrapper;
+	    ? _cheerio2['default'](wrapper) : _cheerio2['default']('<' + wrapper + '></' + wrapper + '>') : wrapper;
 	
 	    replacement = _fnManipulate.createText(this.prepReplacementString(replacement, portion, mat, matIdx));
 	
-	    if (!(_context10 = (_context10 = replacement, _fnManipulate.first).call(_context10), _fnManipulate.prop).call(_context10, 'data')) {
+	    if (!(_context9 = (_context9 = replacement, _fnManipulate.first).call(_context9), _fnManipulate.prop).call(_context9, 'data')) {
 	      return replacement;
 	    }
 	    if (!elmt) {
