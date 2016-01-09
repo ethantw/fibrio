@@ -36,7 +36,7 @@ Object.assign( Finder.fn, {
     let nodeStack    = [ context ]
     let doAvoidNode
 
-    out: while ( true ) {
+    traverse: while ( true ) {
       if ( current::type() === 'text' ) {
         // The match end
         if (
@@ -127,7 +127,7 @@ Object.assign( Finder.fn, {
             cloned.shift() // Omit the root element.
             cloned.pop()   // Omit current text node’s parent element.
 
-            while ( $.contains( cloned.pop(), old )) {
+            while ($.contains( cloned.pop(), old )) {
               rerenderedLevel++
             }
           }
@@ -149,24 +149,28 @@ Object.assign( Finder.fn, {
       } else if ( !doAvoidNode && current::first()) {
         nodeStack.push( current )
         current = current::first()
-        continue
+        continue traverse
       // Move forward:
       } else if ( !doAvoidNode && current::next()) {
         current = current::next()
-        continue
+        continue traverse
       }
 
-      while ( true ) {
+      // Move forward to the next node or finish
+      // the traversing.
+      moveForward: while ( true ) {
         // Move forward:
-        if ( current::next()) {
+        if (current::next()) {
           current = current::next()
-          break
+          break moveForward
         }
         // Move up (and move forward again):
         current = nodeStack.pop()
 
         // Done with the given context:
-        if ( current === context )  break out
+        if ( current === context ) {
+          break traverse
+        }
       }
     }
     return this
