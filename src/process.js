@@ -117,7 +117,7 @@ Object.assign( Finder.fn, {
         // We have to update `nodeStack` once the current
         // element is re-rendered from its parental side via
         // `$parent.html( newHTML )` method.
-        if ( current.rerendered ) {
+        if ( current && current.rerendered ) {
           // The `rerenderedLevel` variable here is to
           // indicate how many level we have to go back.
           let rerenderedLevel = 1
@@ -190,7 +190,7 @@ Object.assign( Finder.fn, {
     let preceding  = ''
     let following  = ''
     let label      = [
-      `{{fibrio-replacement: ${Date.now()}}}`,
+      `{{fibrio-replacement: ${Date.now()}}}[[start]]`,
       `{{fibrio-replacement: ${Date.now()}}}[[end]]`,
     ]
 
@@ -279,7 +279,7 @@ Object.assign( Finder.fn, {
         .find( '[data-fibrio-mat-elmt="last"]' )
         .removeAttr( 'data-fibrio-mat-elmt' )[0]
 
-      ret.rerendered = true
+      if ( ret )  ret.rerendered = true
       return ret
     }
   },
