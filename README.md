@@ -5,7 +5,7 @@
 - [API](#api)
 
 ## Intro
-Fibrio helps manipulate server-side (Node.js) DOM text in complex nested structures. The library provides classic string-like chaining syntax with an easy way to store and revert each modification.
+Fibrio helps manipulate text content in complex nested DOM structures over the server side (Node.js). The library provides classic string-like chaining syntax with an easy way to store and revert each modification.
 
 **Install:** `npm install fibrio`
 
