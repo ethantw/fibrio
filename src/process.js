@@ -1,5 +1,4 @@
-
-import $      from 'cheerio'
+import $ from 'cheerio'
 import Finder from './core'
 import {
   prop, content, type, html,

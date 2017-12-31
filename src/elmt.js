@@ -40,4 +40,3 @@ let preset = { HTML5: {
 Object.assign( Finder, { preset })
 
 export default preset
-

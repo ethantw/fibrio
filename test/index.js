@@ -1,29 +1,31 @@
-
 'use strict'
 
-const Fibrio = require( '..' )
-const $      = require( 'cheerio' )
-const assert = require( 'assert' )
-const Ent    = require( 'special-entities' )
+const Fibrio = require('..')
+const $ = require('cheerio')
+const assert = require('assert')
+const Ent = require('special-entities')
 
-const desc   = describe
-const eq     = assert.equal
-const enteq  = ( a, b ) => assert.equal(hexi( a ), hexi( b ))
-const hexi   = v => Ent.normalizeXML( v, 'utf-8' )
-const htmlEq = ( a, b ) => eq(nmlize( a ), nmlize( b ))
-const nmlize = html => hexi( html )
+const desc = describe
+const eq = assert.equal
+const enteq = (a, b) => assert.equal(hexi(a), hexi(b))
+const hexi = v => Ent.normalizeXML(v, 'utf-8')
+const htmlEq = (a, b) => eq(nmlize(a), nmlize(b))
+
+const nmlize = html => (
+  hexi( html )
   .toLowerCase()
-  .replace( /[\r\n]/g, '' )
-  .replace( /([\s]{2,})/g, ' ' )
-  .replace( /=["']([^"'])["']/g, '=$1' )
-
+  .replace(/[\r\n]/g, '')
+  .replace(/([\s]{2,})/g, ' ')
+  .replace(/=["']([^"'])["']/g, '=$1')
+)
 
 const h = {
-  base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD800-\uDBFF][\uDC00-\uDFFF]',
-  desc:    '[\u2FF0-\u2FFA]',
+  base: '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD800-\uDBFF][\uDC00-\uDFFF]',
+  desc: '[\u2FF0-\u2FFA]',
+  kana: '[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]|\uD82C[\uDC00-\uDC01][\u3099-\u309C]?',
   radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]',
-  kana:    '[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]|\uD82C[\uDC00-\uDC01][\u3099-\u309C]?',
 }
+
 const rcjk = new RegExp( `(${h.base}|${h.desc}|${h.radical}|${h.kana})`, 'gi' )
 
 desc( 'Namespace', () => {
@@ -67,7 +69,6 @@ desc( 'Basics', () => {
       LooOOOOoOOL,
       <em>L</em>OL,
       <em><i><b><u>L</u></b></i>oooOo</em>OL,
-      looo<b>O<i>Oo<u>oO</i>O</u>oooo</b>ol,
       LooOoo<b>OOOoo<i>OooOL</i>,
       LOooo<em>OL</em></b>,
       LoooOO<strong>ooO</strong><i>ooO</i>L</i>,
@@ -79,7 +80,15 @@ desc( 'Basics', () => {
       replace: '($&)',
       wrap: 'lol-em',
     })
-    htmlEq( fib.render(), '<a> <lol-em>(loooooooool)</lol-em>, <em><lol-em>(</lol-em></em><lol-em>lol)</lol-em>, <em><i><b><u><lol-em>(</lol-em></u></b></i><lol-em>loooo</lol-em></em><lol-em>ool)</lol-em>, <lol-em>(loo</lol-em><b><lol-em>o</lol-em><i><lol-em>oo</lol-em><u><lol-em>oo</lol-em></u></i><lol-em>ooooo</lol-em></b><lol-em>ool)</lol-em>, <lol-em>(loooo</lol-em><b><lol-em>ooooo</lol-em><i><lol-em>oooool)</lol-em></i>, <lol-em>(looo</lol-em><em><lol-em>ool)</lol-em></em></b>, <lol-em>(loooo</lol-em><strong><lol-em>ooo</lol-em></strong><i><lol-em>ooo</lol-em></i><lol-em>ol)</lol-em>, lollol, <lol-em>(lol)</lol-em>, loooollool, <lol-em>(looooooooooooooooooooool)</lol-em>!!!!!! </a>' )
+    htmlEq( fib.render(), '<a> <lol-em>(loooooooool)</lol-em>, <em><lol-em>(</lol-em></em><lol-em>lol)</lol-em>, <em><i><b><u><lol-em>(</lol-em></u></b></i><lol-em>loooo</lol-em></em><lol-em>ool)</lol-em>, <lol-em>(loooo</lol-em><b><lol-em>ooooo</lol-em><i><lol-em>oooool)</lol-em></i>, <lol-em>(looo</lol-em><em><lol-em>ool)</lol-em></em></b>, <lol-em>(loooo</lol-em><strong><lol-em>ooo</lol-em></strong><i><lol-em>ooo</lol-em></i><lol-em>ol)</lol-em>, lollol, <lol-em>(lol)</lol-em>, loooollool, <lol-em>(looooooooooooooooooooool)</lol-em>!!!!!! </a>' )
+  })
+
+  it( 'Insanely nested matches II', () => {
+    const fib = Fibrio(`looo<b>O<i>Oo<u>oO</i>O</u>oooo</b>ol`)
+    .find(/\blo+l\b/gi)
+    .wrap('lol-em')
+
+    htmlEq( fib.render(), '<lol-em>looo</lol-em><b><lol-em>o</lol-em><i><lol-em>oo</lol-em><u><lol-em>oo</lol-em></u></i><u><lol-em>o</lol-em></u><lol-em>oooo</lol-em></b><lol-em>ol</lol-em>' )
   })
 })
 
