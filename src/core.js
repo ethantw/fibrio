@@ -1,10 +1,16 @@
+import $ from 'cheerio'
+import { version } from '../package.json'
 
-import $         from 'cheerio'
+import preset from './preset'
+import aggregate from './aggregate'
+import { grep, prepMat } from './grep'
+import process from './process'
+
 import escapeReg from './fn/escapeReg'
-import root      from './fn/root'
-import { prop }  from './fn/manipulate'
-import setAct    from './fn/setAct'
-import revertTo  from './fn/revertTo'
+import root from './fn/root'
+import { prop } from './fn/manipulate'
+import setAct from './fn/setAct'
+import revertTo from './fn/revertTo'
 
 class Finder {
   /**
@@ -17,15 +23,18 @@ class Finder {
    * @return {Fibrio} The instance itself
    */
   constructor( html, noPreset=false ) {
-    this.ohtml   = html
+    this.ohtml = html
     this.context = root( html )
-    this.phase   = []
+    this.phase = []
 
     if ( noPreset === true ) {
       this.avoid = new Set()
-      this.bdry  = new Set()
+      this.bdry = new Set()
     }
   }
+
+  static preset = preset
+  static finder = (...arg) => new Finder(...arg)
 
   /**
    * Check if an element matches with the configured
@@ -56,6 +65,11 @@ class Finder {
       .replace( /<\/?fibrio\-(root|text)>/gi, '' )
     )
   }
+
+  portionMode = 'retain'
+  context = undefined
+  avoid = new Set( preset.HTML5.NON_TEXT )
+  bdry = new Set( preset.HTML5.BDRY )
 
   /**
    * Return an array of the text aggregation
@@ -441,10 +455,14 @@ class Finder {
   }
 }
 
-Finder.version = '@VERSION'
-Finder.fn      = Finder.prototype
-
+Finder.version = version
+Finder.fn = Finder.prototype
 Finder.fn.filter = Finder.fn.query = Finder.fn.$ = Finder.fn.qsa
 
-export default Finder
+Object.assign(
+  Finder.fn,
+  { aggregate, grep, prepMat },
+  process,
+)
 
+export default Finder

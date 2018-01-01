@@ -1,7 +1,4 @@
-
-import Finder from './core'
-
-// HTML5 elements categorised by function:
+// HTML5 elements categorised by functions:
 // http://www.w3.org/TR/html-markup/elements-by-function.html
 
 const NON_TEXT = [
@@ -32,11 +29,9 @@ const BDRY = [
   'table', 'tbody', 'thead', 'th', 'tr', 'td', 'caption', 'col', 'tfoot', 'colgroup',
 ]
 
-let preset = { HTML5: {
-  NON_TEXT,
-  BDRY,
-}}
-
-Object.assign( Finder, { preset })
-
-export default preset
+export default {
+  HTML5: {
+    NON_TEXT,
+    BDRY,
+  },
+}

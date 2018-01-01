@@ -1,5 +1,5 @@
 import $ from 'cheerio'
-import Finder from './core'
+
 import {
   prop, content, type, html,
   parent, first, prev, next,
@@ -7,7 +7,7 @@ import {
   createText,
 } from './fn/manipulate'
 
-Object.assign( Finder.fn, {
+export default {
   /**
    * Process (wrapping/replacing) the matched text
    * with the previously defined wrapper and/or
@@ -387,5 +387,4 @@ Object.assign( Finder.fn, {
     }
     return string.substr( portion.idxInMat, portion.text.length )
   },
-})
-
+}

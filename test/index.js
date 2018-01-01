@@ -1,9 +1,11 @@
 'use strict'
 
-const Fibrio = require('..')
 const $ = require('cheerio')
 const assert = require('assert')
 const Ent = require('special-entities')
+
+const Fibrio = require('..')
+const pkg = require('../package.json')
 
 const desc = describe
 const eq = assert.equal
@@ -31,11 +33,12 @@ const rcjk = new RegExp( `(${h.base}|${h.desc}|${h.radical}|${h.kana})`, 'gi' )
 desc( 'Namespace', () => {
   it(
     'Fibrio identifier and versioning',
-    () => eq( Fibrio.fibrio, Fibrio.version )
+    () => eq( Fibrio.version, pkg.version )
   )
 
   it( 'Whose instance', () => {
-    eq( Fibrio( '<html></html>' ) instanceof Fibrio.finder, true )
+    eq( new Fibrio( '<html></html>' ) instanceof Fibrio, true )
+    eq( Fibrio.finder( '<html></html>' ) instanceof Fibrio, true )
   })
 })
 
@@ -54,7 +57,7 @@ desc( 'Basics', () => {
 
   it( 'Element boundary arsenal', () => {
     for ( let itt in tester ) {
-      fib = Fibrio( itt )
+      fib = Fibrio.finder( itt )
         .wrap( /TEST/, 'x' )
       htmlEq( fib.html, tester[ itt ] )
 
@@ -64,7 +67,7 @@ desc( 'Basics', () => {
   })
 
   it( 'Insanely nested matches', () => {
-    let fib = Fibrio(
+    let fib = new Fibrio(
    `<a>
       LooOOOOoOOL,
       <em>L</em>OL,
@@ -84,7 +87,7 @@ desc( 'Basics', () => {
   })
 
   it( 'Insanely nested matches II', () => {
-    const fib = Fibrio(`looo<b>O<i>Oo<u>oO</i>O</u>oooo</b>ol`)
+    const fib = new Fibrio(`looo<b>O<i>Oo<u>oO</i>O</u>oooo</b>ol`)
     .find(/\blo+l\b/gi)
     .wrap('lol-em')
 
@@ -95,7 +98,7 @@ desc( 'Basics', () => {
 desc( 'Finding', () => {
   it ( 'String match', () => {
     let text = 'this is a ??te<i>st</i>'
-    let fib  = Fibrio( text )
+    let fib  = new Fibrio( text )
     fib.wrap( '??test', 'x' )
     htmlEq( fib.html, 'this is a <x>??te</x><i><x>st</x></i>' )
   })
@@ -103,7 +106,7 @@ desc( 'Finding', () => {
   it( 'Variable length RegExp matches', function( done ) {
     this.timeout( 0 )
     for ( let i = 0; i < 100; ++i ) {
-      let fib = Fibrio( new Array( i+1 ).join( '<em>x</em>' ))
+      let fib = new Fibrio( new Array( i+1 ).join( '<em>x</em>' ))
       fib.wrap( /x+/, 'z' )
       htmlEq( fib.html, new Array( i+1 ).join( '<em><z>x</z></em>' ))
     }
@@ -112,7 +115,7 @@ desc( 'Finding', () => {
 
   it( 'Only ouput specified groups', () => {
     let text = 'TEST TESThello TESThello TESThello'
-    let fib  = Fibrio( text )
+    let fib  = new Fibrio( text )
     let act  = {
       find: /(TEST)hello/,
       wrap: 'x',
@@ -142,7 +145,7 @@ desc( 'Finding', () => {
 
   it( 'Word boundaries', () => {
     let text = 'a go matching at test wordat at <p>AAA</p><p>BBB</p>'
-    let fib  = Fibrio( text )
+    let fib  = new Fibrio( text )
 
     fib.wrap( /\bat\b/, 'x' )
     htmlEq( fib.html, 'a go matching <x>at</x> test wordat at <p>AAA</p><p>BBB</p>' )
@@ -150,7 +153,7 @@ desc( 'Finding', () => {
     fib.revert().wrap( /\bat\b/g, 'x' )
     htmlEq( fib.html, 'a go matching <x>at</x> test wordat <x>at</x> <p>AAA</p><p>BBB</p>' )
 
-    fib = Fibrio( text, true )
+    fib = new Fibrio( text, true )
       .action({
         find: /\bAAA\b/,
         wrap: 'x',
@@ -169,35 +172,35 @@ desc( 'Finding', () => {
     let fib
 
     // By default
-    fib = Fibrio( html ).action( action )
+    fib = new Fibrio( html ).action( action )
     htmlEq( fib.render(), '<v><x>Foo</x><v><x>Bar</x></v></v>' )
 
     // No boundary at all
-    fib = Fibrio( html )
+    fib = new Fibrio( html )
       .action( action )
       .removeBdry()
     htmlEq( fib.render(), '<v><x>Foo</x><v><x>Bar</x></v></v>' )
 
     // Consider all elements a self-contained context
-    fib = Fibrio( html )
+    fib = new Fibrio( html )
       .action( action )
       .addBdry( '*' )
     htmlEq( fib.render(), html )
 
     // Consider `a` elements a context boundary while
     // `b` elements not
-    fib = Fibrio( '<a>Foo<b>BarFoo</b>Bar</a>' )
+    fib = new Fibrio( '<a>Foo<b>BarFoo</b>Bar</a>' )
       .action({ find: /FooBar/, wrap: 'x' })
       .addBdry( 'a' )
     htmlEq( fib.render(), '<a><x>Foo</x><b><x>Bar</x>Foo</b>Bar</a>' )
 
-    fib = Fibrio( '<a>Foo</a><b>Bar</b> <b>Foo</b><a>Bar</a>' )
+    fib = new Fibrio( '<a>Foo</a><b>Bar</b> <b>Foo</b><a>Bar</a>' )
       .action( action )
       .addBdry( 'a' )
     htmlEq( fib.render(), '<a>Foo</a><b>Bar</b> <b>Foo</b><a>Bar</a>' )
 
     // Other selectors (i.e. classes)
-    fib = Fibrio( '<a class="c">Foo</a><b>Bar</b> <b>Foo</b><a>Bar</a>' )
+    fib = new Fibrio( '<a class="c">Foo</a><b>Bar</b> <b>Foo</b><a>Bar</a>' )
       .action( action )
       .addBdry( '.c' )
     htmlEq( fib.render(), '<a class=c>foo</a><b>bar</b> <b><x>foo</x></b><a><x>bar</x></a>' )
@@ -205,14 +208,14 @@ desc( 'Finding', () => {
 
   it ( 'ABBA', () => {
     let html = `A<i>BB</i>A, A<code>BB</code>A, <code>BB</code>A, ABBA.`
-    let fib = Fibrio( html )
+    let fib = new Fibrio( html )
       .replace( /(A)(B)/gi, '$1 $2' )
       .replace( /(B)(A)/gi, '$1 $2' )
     htmlEq( fib.html, 'a<i> bb</i> a, a<code> bb</code> a, <code>bb</code> a, a bb a.' )
   })
 
   it( 'Preset context boundaries', () => {
-    let fib = Fibrio( '<p>Some</p>Thing<em>Some<span>Thing</span></em><div>Some</div>Thing' )
+    let fib = new Fibrio( '<p>Some</p>Thing<em>Some<span>Thing</span></em><div>Some</div>Thing' )
       .wrap( /something/gi, 'x' )
     htmlEq( fib.html, '<p>some</p>thing<em><x>some</x><span><x>thing</x></span></em><div>some</div>thing' )
 
@@ -224,12 +227,12 @@ desc( 'Finding', () => {
       '<svg><circle/></svg>',
     ].forEach( elmt => {
       let html = 'foo' + elmt + 'bar'
-      let fib = Fibrio( html )
+      let fib = new Fibrio( html )
         .wrap( /foobar/i, 'x' )
       htmlEq( fib.html, html )
     })
 
-    fib = Fibrio( `
+    fib = new Fibrio( `
       foo<small>ba<i>r</i></small>
       foo<small>b<i>a<b>r</b></i></small>
       <em>fooba</em>r
@@ -246,7 +249,7 @@ desc( 'Unicode support', () => {
   it( 'Non-ASCII (BMP)', () => {
     const wrapper = i => $( `<x>${i}</x>` )
     let i = 0
-    let fib = Fibrio( `我的「朋友」` )
+    let fib = new Fibrio( `我的「朋友」` )
       .action({
         find:   /[我的朋友]/gi,
         replace: _ => wrapper( ++i ),
@@ -257,7 +260,7 @@ desc( 'Unicode support', () => {
 
     it( 'Non-ASCII (non-BMP)', () => {
       let i = 0
-      let fib = Fibrio( `𫞵𫞦𠁻𠁶〇⼌⿕⺃⻍⻰⻳⿸⿷⿳` )
+      let fib = new Fibrio( `𫞵𫞦𠁻𠁶〇⼌⿕⺃⻍⻰⻳⿸⿷⿳` )
       fib
         .wrap( rcjk, 'x' )
         .replace( rcjk, _ => `[${++i}]` )
@@ -268,7 +271,7 @@ desc( 'Unicode support', () => {
 
   desc( 'Replacement (With nodes)', () => {
     it( 'StencilNode definition', () => {
-      let fib = Fibrio( 'test test' )
+      let fib = new Fibrio( 'test test' )
         .wrap( /test/gi, 'div' )
       htmlEq( fib.html, '<div>test</div> <div>test</div>' )
 
@@ -291,13 +294,13 @@ desc( 'Unicode support', () => {
   it( 'Edge case text nodes', () => {})
 
   it( 'Custom replacement function', () => {
-    let fib = Fibrio( 'aaaaa' )
+    let fib = new Fibrio( 'aaaaa' )
       .replace( /a/g, portion => `b${portion.text}` )
     htmlEq( fib.html, 'bababababa' )
 
     let nCalled = 0
 
-    fib = Fibrio( 'test<b>ing</b>123' )
+    fib = new Fibrio( 'test<b>ing</b>123' )
       .replace( /testing[0-9]+/g, portion => {
         nCalled++
         switch ( portion.idx ) {
@@ -315,13 +318,13 @@ desc( 'Unicode support', () => {
 
 desc( 'Replcement (with text)', () => {
   it( 'Basic', () => {
-    let fib = Fibrio( '111 foo 222 foo' )
+    let fib = new Fibrio( '111 foo 222 foo' )
       .replace( 'foo', 'bar' )
     htmlEq( fib.html, '111 bar 222 bar' )
   })
 
   it( 'With regex plus capture group', () => {
-    let fib = Fibrio( '111 222 333' )
+    let fib = new Fibrio( '111 222 333' )
       .replace( /(\d+)/g, 'aaa$1' )
     htmlEq( fib.html, 'aaa111 aaa222 aaa333' )
   })
@@ -329,25 +332,25 @@ desc( 'Replcement (with text)', () => {
 
 desc( 'Complex capture groups', () => {
   it( '$n', () => {
-    let fib = Fibrio( '111abc333' )
+    let fib = new Fibrio( '111abc333' )
       .replace( /(a)(b)(c)/g, '$3$2$1' )
     htmlEq( fib.html, '111cba333' )
   })
 
   it( '$&/$0', () => {
-    let fib = Fibrio( '111aabbcc333' )
+    let fib = new Fibrio( '111aabbcc333' )
       .replace( /[a-z]{2}/g, '_$0_$&_' )
     htmlEq( fib.html, '111_aa_aa__bb_bb__cc_cc_333' )
   })
 
   it( 'Left ($`)', () => {
-    let fib = Fibrio( 'this is a test' )
+    let fib = new Fibrio( 'this is a test' )
       .replace( /\ba\b/, '[$`]' )
     htmlEq( fib.html, 'this is [this is ] test' )
   })
 
   it( 'Right ($\')', () => {
-    let fib = Fibrio( 'this is a test' )
+    let fib = new Fibrio( 'this is a test' )
       .replace( /\ba\b/, `[$']` )
     htmlEq( fib.html, 'this is [ test] test' )
   })
@@ -355,7 +358,7 @@ desc( 'Complex capture groups', () => {
 
 desc( 'Filtering', () => {
   it( 'Preset element filtering', () => {
-    let fib = Fibrio(
+    let fib = new Fibrio(
      `foo
       <style>foo{}</style>
       foo
@@ -371,7 +374,7 @@ desc( 'Filtering', () => {
   })
 
   it( 'Custom element filtering', () => {
-    let fib = Fibrio(
+    let fib = new Fibrio(
      `foo
       <a class="ignore">foo</a>
       fo<a class="ignore">o</a>o
@@ -407,7 +410,7 @@ desc( 'Filtering', () => {
       </content>
     </root>
     `
-    let fib  = Fibrio( html )
+    let fib  = new Fibrio( html )
       .qsa( 'root > content' )
       .filter( 'p' )
       .action({
@@ -432,7 +435,7 @@ desc( 'Filtering', () => {
 desc( 'Revert', () => {
   it( 'Basic text', () => {
     let html = 'this is a test'
-    let fib  = Fibrio( html )
+    let fib  = new Fibrio( html )
       .replace( /\ba\b/, 'something' )
       .revert()
     htmlEq( fib.html, html )
@@ -440,7 +443,7 @@ desc( 'Revert', () => {
 
   it( 'Complex text', () => {
     let html = 'This is a Test123'
-    let fib  = Fibrio( html )
+    let fib  = new Fibrio( html )
       .replace( /\w{2}/g, '$`' )
       .revert()
     htmlEq( fib.html, html )
@@ -448,7 +451,7 @@ desc( 'Revert', () => {
 
   it( 'Cross-node', () => {
     let html = 'Testing 123<a>442</a>35432<b>342</b>3dg<e>4</e> Testing'
-    let fib = Fibrio( html )
+    let fib = new Fibrio( html )
       .wrap( /\d{5}/g, 'span' )
       .revert()
     htmlEq( fib.html, html )
@@ -456,7 +459,7 @@ desc( 'Revert', () => {
 
   it( 'Multiple wrapping/replacing and reverts', () => {
     let html = 'I laughed out so loud: &#x2018;lol Loo<x>OO</x>oooOOl loo<y>OOo</y>oOL meaning LOL meaning LooOOoL&#x2019;.'
-    let fib  = Fibrio( html )
+    let fib  = new Fibrio( html )
       .action({
         find:    /lo+l/gi,
         wrap:    'u',
@@ -465,7 +468,7 @@ desc( 'Revert', () => {
       .process()
       .action({})
       .replace( /\b(\w+)(ed|ing)\b/gi, '[$1[$2]]' )
-    let cloned = Object.assign( Fibrio(), fib )
+    let cloned = Object.assign( new Fibrio(), fib )
     cloned.phase = Array.from( cloned.phase )
 
     htmlEq( cloned.ohtml, fib.ohtml )
@@ -479,14 +482,14 @@ desc( 'Revert', () => {
 desc( 'Portion modes', () => {
   let html = `Testing 123 HE<em>LLO there</em>`
   it( 'Portion mode: replacement in the first portion node', () => {
-    let fib = Fibrio( html )
+    let fib = new Fibrio( html )
       .mode( 'first' )
       .wrap( /hello/i, 'span' )
     htmlEq( fib.html, 'testing 123 <span>HELLO</span><em> there</em>' )
   })
 
   it( 'Portion mode: replacement in the original portion nodes', () => {
-    let fib = Fibrio( html )
+    let fib = new Fibrio( html )
       .mode( 'retain' )
       .wrap( /hello/i, 'span' )
     htmlEq( fib.html, 'testing 123 <span>HE</span><em><span>LLO</span> there</em>' )
