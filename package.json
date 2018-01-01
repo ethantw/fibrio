@@ -7,9 +7,8 @@
     "build": "{src,test}/**/*.js"
   },
   "scripts": {
-    "postinstall": "yarn build",
-    "test": "mocha",
-    "build": "rollup -c && yarn test",
+    "test": "yarn build",
+    "build": "rollup -c && mocha",
     "dev": "npm-watch build"
   },
   "repository": {
